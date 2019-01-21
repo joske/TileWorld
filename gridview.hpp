@@ -5,6 +5,7 @@
  *      Author: jos
  */
 
+#ifndef NOGUI
 #ifndef GRIDVIEW_HPP_
 #define GRIDVIEW_HPP_
 
@@ -36,3 +37,4 @@ class GridView: public Gtk::DrawingArea {
 };
 
 #endif /* GRIDVIEW_HPP_ */
+#endif /* NOGUI */

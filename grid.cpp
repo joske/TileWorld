@@ -8,6 +8,12 @@
 
 void Grid::start(void) {
 	cout << "start" << endl;
+#ifdef NOGUI
+	while (true) {
+	    update();
+	    sleep(1);
+	}
+#endif
 }
 
 Location Grid::randomFreeLocation() {

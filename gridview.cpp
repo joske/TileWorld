@@ -5,6 +5,7 @@
  *      Author: jos
  */
 
+#ifndef NOGUI
 #include "gridview.hpp"
 #include <cairomm/context.h>
 #include <cmath>
@@ -122,4 +123,4 @@ void GridView::draw_text(const Cairo::RefPtr<Cairo::Context>& cr, int x, int y,
 
     layout->show_in_cairo_context(cr);
 }
-
+#endif
