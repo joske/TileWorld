@@ -8,12 +8,22 @@
 
 using namespace std;
 
-enum State {IDLE=0, FIND_TILE=1, FIND_HOLE=2, MOVE_TO_TILE=3, MOVE_TO_HOLE=4};
+enum State {
+    IDLE = 0, FIND_TILE = 1, FIND_HOLE = 2, MOVE_TO_TILE = 3, MOVE_TO_HOLE = 4
+};
 class Grid;
 
-class Agent : public GridObject {
+class Agent: public GridObject {
     public:
-        Agent(Grid* g, int pid, int x, int y) : GridObject(x, y, AGENT) {score = 0; id = pid; state = IDLE; grid = g;}
+        Agent(Grid* g, int pid, int x, int y) :
+                GridObject(x, y, AGENT) {
+            score = 0;
+            id = pid;
+            state = IDLE;
+            hole = NULL;
+            tile = NULL;
+            grid = g;
+        }
 
         int getId();
         void update();
@@ -32,5 +42,10 @@ class Agent : public GridObject {
         void moveToTile();
         void moveToHole();
         direction getNextLocalMove(Location from, Location to);
+
+        friend std::ostream& operator<<(std::ostream &strm, const Agent &a) {
+            return strm << "Agent(x=" << a.x << ", y=" << a.y << ", score=" << a.score << ", state=" << a.state << ")" << endl;
+        }
+
 };
 #endif

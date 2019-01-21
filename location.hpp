@@ -8,12 +8,15 @@ using namespace std;
 
 class Location {
     public:
-        Location(int xx, int yy) : x(xx), y(yy) {}
-        ~Location() {}
-        bool operator==(const Location& loc1) {
-        	return loc1.x == x && loc1.y == y;
+        Location(int xx, int yy) :
+                x(xx), y(yy) {
         }
-        int x,y;
+        ~Location() {
+        }
+        bool operator==(const Location& loc1) {
+            return loc1.x == x && loc1.y == y;
+        }
+        int x, y;
         int distance(Location other);
         Location nextLocation(direction m);
 };

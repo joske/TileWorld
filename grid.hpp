@@ -19,21 +19,21 @@ class Grid {
             numHoles = pnumHoles;
 
             for (int i = 0; i < COLS; i++) {
-            	for (int j = 0; j < ROWS; j++) {
-            		objects[i][j] = NULL;
-            	}
+                for (int j = 0; j < ROWS; j++) {
+                    objects[i][j] = NULL;
+                }
             }
             for (int i = 0; i < numAgents; i++) {
-            	createAgent(i);
+                createAgent(i);
             }
             for (int i = 0; i < numTiles; i++) {
-            	createTile();
+                createTile();
             }
             for (int i = 0; i < numHoles; i++) {
-            	createHole();
+                createHole();
             }
             for (int i = 0; i < numHoles; i++) {
-            	createObstacle();
+                createObstacle();
             }
         }
         vector<Agent*> getAgents();
@@ -46,10 +46,10 @@ class Grid {
         bool allowedLocation(Location loc);
         void pickTile(Tile* tile);
         int dumpTile(Hole *hole);
-    private:
-		int numAgents;
-		int numHoles;
-		int numTiles;
+        private:
+        int numAgents;
+        int numHoles;
+        int numTiles;
         vector<Agent*> agents;
         vector<Hole*> holes;
         vector<Tile*> tiles;
@@ -63,11 +63,11 @@ class Grid {
         Location randomFreeLocation();
         void printGrid();
 
-		friend std::ostream& operator<<(std::ostream &strm, const Grid &a) {
-			return strm << "Grid(agents=" << a.agents.size() << ", tiles=" << a.tiles.size() << ", holes=" << a.holes.size() << endl;
-		}
+        friend std::ostream& operator<<(std::ostream &strm, const Grid &a) {
+            return strm << "Grid(agents=" << a.agents.size() << ", tiles="
+                    << a.tiles.size() << ", holes=" << a.holes.size() << endl;
+        }
 
 };
-
 
 #endif

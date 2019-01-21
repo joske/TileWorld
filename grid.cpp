@@ -149,7 +149,7 @@ int Grid::dumpTile(Hole *hole) {
 		it++;
 	}
 	createTile(); // create a new tile
-	createHole();
+	createHole(); // and a new hole
 	return 1;
 }
 
@@ -165,7 +165,7 @@ void Grid::update() {
 		objects[newLoc.x][newLoc.y] = *agent;
 		agent++;
 	}
-//    printGrid();
+    printGrid();
 }
 
 GridObject* Grid::getObject(int c, int r) {
@@ -188,6 +188,9 @@ void Grid::printGrid() {
 				case TILE:
 					cout << "T";
 					break;
+				case OBSTACLE:
+				    cout << "#";
+				    break;
 				default:
 					cout << o->getType();
 				}
