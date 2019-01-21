@@ -2,10 +2,14 @@
 #include "gridview.hpp"
 #include <gtkmm/application.h>
 #include <gtkmm/window.h>
+#include <time.h>
+#include <stdlib.h>
 
 using namespace Gtk;
 
 int main(int argc, char** argv) {
+
+    srand(time(NULL));
 
     auto app = Gtk::Application::create(argc, argv, "TileWorld");
 

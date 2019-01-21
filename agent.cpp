@@ -53,39 +53,39 @@ void Agent::findHole() {
 void Agent::moveToTile() {
     TRACE_IN
     if (tile != NULL) {
-        direction m = getNextLocalMove(this->getLocation(),
-                tile->getLocation());
+        direction m = getNextLocalMove(this->getLocation(), tile->getLocation());
         cout << this << " next move " << m << endl;
         Location oldLoc = Location(x, y);
-        if (oldLoc.distance(tile->getLocation()) == 1) {
+        Location newLoc = oldLoc.nextLocation(m);
+        grid->move(oldLoc, newLoc);
+        if (newLoc == tile->getLocation()) {
             // we are there, pick the tile
             grid->pickTile(tile);
+            gotTile = true;
             state = FIND_HOLE;
         }
-        Location newLoc = oldLoc.nextLocation(m);
-        setLocation(newLoc.x, newLoc.y);
     }
 }
 
 void Agent::moveToHole() {
     TRACE_IN
     if (hole != NULL) {
-        direction m = getNextLocalMove(this->getLocation(),
-                hole->getLocation());
-        cout << this << " next move " << m << endl;
+        direction m = getNextLocalMove(this->getLocation(), hole->getLocation());
+        cout << *this << " next move " << m << endl;
         Location oldLoc = Location(x, y);
-        if (oldLoc.distance(tile->getLocation()) == 1) {
+        Location newLoc = oldLoc.nextLocation(m);
+        grid->move(oldLoc, newLoc);
+        if (newLoc == hole->getLocation()) {
             // we are there, dump the tile
-            int sc = grid->dumpTile(hole);
+            int sc = grid->dumpTile(tile, hole);
             tile = NULL;
+            gotTile = false;
             delete tile;
             hole = NULL;
             delete hole;
             this->score += sc;
-            state = IDLE;
+            state = FIND_TILE;
         }
-        Location newLoc = oldLoc.nextLocation(m);
-        setLocation(newLoc.x, newLoc.y);
     }
 }
 
@@ -93,15 +93,25 @@ direction Agent::getNextLocalMove(Location from, Location to) {
     TRACE_IN
     int r = (rand() % 100) + 1;
     if (r > 80) {
+        cout << "random move" << endl;
         r = (rand() % 4);
-        return static_cast<direction>(r);
+        direction d = static_cast<direction>(r);
+        while (!grid->possibleMove(from, d)) {
+            r = (rand() % 4);
+            d = static_cast<direction>(r);
+        }
+        return d;
     }
     int min_dist = INT_MAX;
     direction best_move;
-    for (int dir = 1; dir <= 4; dir++) {
+    for (int dir = 0; dir < 3; dir++) {
         direction d = static_cast<direction>(dir);
         Location l = from.nextLocation(d);
-        if (l == to || grid->possibleMove(from, d)) {
+        if (l == to) {
+            // we have arrived
+            best_move = d;
+            break;
+        } else if (grid->possibleMove(from, d)) {
             int dist = l.distance(to);
             if (dist < min_dist) {
                 min_dist = dist;

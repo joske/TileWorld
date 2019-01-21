@@ -34,8 +34,8 @@ bool GridView::on_timeout() {
 
 bool GridView::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
     cr->set_line_width(2);
-    for (int c = 0; c < COLS; c++) {
-        for (int r = 0; r < ROWS; r++) {
+    for (int r = 0; r < ROWS; r++) {
+        for (int c = 0; c < COLS; c++) {
             int x = c * MAG;
             int y = r * MAG;
             cr->set_source_rgb(0, 0, 0);

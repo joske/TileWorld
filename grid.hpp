@@ -44,8 +44,9 @@ class Grid {
         Tile* getClosestTile(Location start);
         bool possibleMove(Location from, direction m);
         bool allowedLocation(Location loc);
+        void move(Location from, Location to);
         void pickTile(Tile* tile);
-        int dumpTile(Hole *hole);
+        int dumpTile(Tile* tile, Hole *hole);
         private:
         int numAgents;
         int numHoles;

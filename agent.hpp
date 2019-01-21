@@ -23,10 +23,14 @@ class Agent: public GridObject {
             hole = NULL;
             tile = NULL;
             grid = g;
+            gotTile = false;
         }
 
         int getId();
         void update();
+        bool hasTile() {
+            return gotTile;
+        }
 
     private:
         Grid* grid;
@@ -34,6 +38,7 @@ class Agent: public GridObject {
         int score;
         State state;
         Tile* tile;
+        bool gotTile;
         Hole* hole;
 
         void idle();
@@ -44,7 +49,7 @@ class Agent: public GridObject {
         direction getNextLocalMove(Location from, Location to);
 
         friend std::ostream& operator<<(std::ostream &strm, const Agent &a) {
-            return strm << "Agent(x=" << a.x << ", y=" << a.y << ", score=" << a.score << ", state=" << a.state << ")" << endl;
+            return strm << "Agent(x=" << a.x << ", y=" << a.y << ", hasTile=" << a.gotTile << ", score=" << a.score << ", state=" << a.state << ")" << endl;
         }
 
 };

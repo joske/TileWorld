@@ -7,24 +7,24 @@ int Location::distance(Location other) {
 }
 
 Location Location::nextLocation(direction m) {
-    int nr = x;
-    int nc = y;
+    int nx = x;
+    int ny = y;
 
     switch (m) {
         case UP:
-            nr--;
+            ny--;
             break;
         case DOWN:
-            nr++;
+            ny++;
             break;
         case LEFT:
-            nc--;
+            nx--;
             break;
         case RIGHT:
-            nc++;
+            nx++;
             break;
     }
-    return Location(nr, nc);
+    return Location(nx, ny);
 }
 
 std::ostream& operator<<(std::ostream &strm, const Location &l) {
