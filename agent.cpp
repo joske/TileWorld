@@ -104,7 +104,7 @@ direction Agent::getNextLocalMove(Location from, Location to) {
     }
     int min_dist = INT_MAX;
     direction best_move;
-    for (int dir = 0; dir < 3; dir++) {
+    for (int dir = 0; dir < 4; dir++) {
         direction d = static_cast<direction>(dir);
         Location l = from.nextLocation(d);
         if (l == to) {
