@@ -1,0 +1,7 @@
+Debug/
+TileWorld
+*.o
+.cproject
+.project
+.settings
+.vscode
