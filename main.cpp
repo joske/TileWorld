@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
     win.set_default_size(COLS * MAG, ROWS * MAG);
     win.set_title("DrawingArea");
 #endif
-    Grid grid = Grid(1, 5, 5);
+    Grid grid = Grid(6, 20, 20);
 #ifndef NOGUI
     GridView area(grid);
     win.add(area);

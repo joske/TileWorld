@@ -47,14 +47,14 @@ bool GridView::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
                         drawAgent(cr, o, x, y);
                         break;
                     case HOLE:
-                        cr->arc(x, y, MAG / 2, 0, 2 * M_PI);
+                        cr->arc(x + MAG/2, y + MAG/2, MAG / 2, 0, 2 * M_PI);
                         cr->fill();
                         break;
                     case TILE:
                         drawTile(cr, o, x, y);
                         break;
                     case OBSTACLE:
-                        cr->rectangle(x - MAG / 2, y - MAG / 2, MAG, MAG);
+                        cr->rectangle(x, y, MAG, MAG);
                         cr->fill();
                         break;
                 }
@@ -68,15 +68,18 @@ bool GridView::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 void GridView::drawTile(const Cairo::RefPtr<Cairo::Context>& cr, GridObject* o,
         int x, int y) {
     Tile* tile = reinterpret_cast<Tile*>(o);
-    cr->arc(x, y, MAG / 2, 0, 2 * M_PI);
-    draw_text(cr, x, y - MAG / 2, to_string(tile->getScore()).c_str());
+    cr->arc(x + MAG/2, y + MAG/2, MAG / 2, 0, 2 * M_PI);
+    draw_text(cr, x, y, to_string(tile->getScore()).c_str());
 }
 
 void GridView::drawAgent(const Cairo::RefPtr<Cairo::Context>& cr, GridObject* o,
         int x, int y) {
     Agent* agent = reinterpret_cast<Agent*>(o);
     set_color(cr, agent->getId());
-    cr->rectangle(x - MAG / 2, y - MAG / 2, MAG, MAG);
+    cr->rectangle(x, y, MAG, MAG);
+    if (agent->hasTile()) {
+        cr->arc(x + MAG/2, y + MAG/2, MAG / 2, 0, 2 * M_PI);
+    }
 }
 
 void GridView::set_color(const Cairo::RefPtr<Cairo::Context>& cr, int id) {
