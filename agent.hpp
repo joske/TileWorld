@@ -28,6 +28,9 @@ class Agent: public GridObject {
 
         int getId();
         void update();
+        Tile* getTile() {
+            return tile;
+        }
         bool hasTile() {
             return gotTile;
         }
@@ -49,7 +52,7 @@ class Agent: public GridObject {
         direction getNextLocalMove(Location from, Location to);
 
         friend std::ostream& operator<<(std::ostream &strm, const Agent &a) {
-            return strm << "Agent(x=" << a.x << ", y=" << a.y << ", hasTile=" << a.gotTile << ", score=" << a.score << ", state=" << a.state << ")" << endl;
+            return strm << "Agent(id=" << a.id << ", x=" << a.x << ", y=" << a.y << ", hasTile=" << a.gotTile << ", score=" << a.score << ", state=" << a.state << ")" << endl;
         }
 
 };

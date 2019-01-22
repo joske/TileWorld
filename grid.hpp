@@ -45,7 +45,7 @@ class Grid {
         bool possibleMove(Location from, direction m);
         bool allowedLocation(Location loc);
         void move(Location from, Location to);
-        void pickTile(Tile* tile);
+        bool pickTile(Tile* tile);
         int dumpTile(Tile* tile, Hole *hole);
         private:
         int numAgents;

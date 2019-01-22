@@ -8,7 +8,6 @@ int Agent::getId() {
 }
 
 void Agent::update() {
-    TRACE_IN
     switch (state) {
         case IDLE:
             idle();
@@ -26,12 +25,9 @@ void Agent::update() {
             moveToHole();
             break;
     }
-    TRACE_OUT
-    ;
 }
 
 void Agent::idle() {
-    TRACE_IN
     state = FIND_TILE;
 }
 
@@ -52,24 +48,31 @@ void Agent::findHole() {
 
 void Agent::moveToTile() {
     TRACE_IN
-    if (tile != NULL) {
+    if (tile != NULL && tile == grid->getObject(tile->getX(), tile->getY())) {
         direction m = getNextLocalMove(this->getLocation(), tile->getLocation());
-        cout << this << " next move " << m << endl;
+        cout << *this << " next move " << m << endl;
         Location oldLoc = Location(x, y);
         Location newLoc = oldLoc.nextLocation(m);
         grid->move(oldLoc, newLoc);
         if (newLoc == tile->getLocation()) {
             // we are there, pick the tile
-            grid->pickTile(tile);
-            gotTile = true;
-            state = FIND_HOLE;
+            bool tileStilThere = grid->pickTile(tile);
+            if (tileStilThere) {
+                gotTile = true;
+                state = FIND_HOLE;
+            } else {
+                tile = NULL;
+                state = FIND_TILE;
+            }
         }
+    } else {
+        state = FIND_TILE;
     }
 }
 
 void Agent::moveToHole() {
     TRACE_IN
-    if (hole != NULL) {
+    if (tile != NULL && hole == grid->getObject(hole->getX(), hole->getY())) {
         direction m = getNextLocalMove(this->getLocation(), hole->getLocation());
         cout << *this << " next move " << m << endl;
         Location oldLoc = Location(x, y);
@@ -86,6 +89,8 @@ void Agent::moveToHole() {
             this->score += sc;
             state = FIND_TILE;
         }
+    } else {
+        state = FIND_HOLE;
     }
 }
 
@@ -93,7 +98,7 @@ direction Agent::getNextLocalMove(Location from, Location to) {
     TRACE_IN
     int r = (rand() % 100) + 1;
     if (r > 80) {
-        cout << "random move" << endl;
+        cout << *this << " random move" << endl;
         r = (rand() % 4);
         direction d = static_cast<direction>(r);
         while (!grid->possibleMove(from, d)) {

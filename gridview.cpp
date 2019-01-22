@@ -69,7 +69,8 @@ void GridView::drawTile(const Cairo::RefPtr<Cairo::Context>& cr, GridObject* o,
         int x, int y) {
     Tile* tile = reinterpret_cast<Tile*>(o);
     cr->arc(x + MAG/2, y + MAG/2, MAG / 2, 0, 2 * M_PI);
-    draw_text(cr, x, y, to_string(tile->getScore()).c_str());
+    cr->begin_new_sub_path();
+    draw_text(cr, x + MAG / 4, y, to_string(tile->getScore()).c_str());
 }
 
 void GridView::drawAgent(const Cairo::RefPtr<Cairo::Context>& cr, GridObject* o,
@@ -78,7 +79,10 @@ void GridView::drawAgent(const Cairo::RefPtr<Cairo::Context>& cr, GridObject* o,
     set_color(cr, agent->getId());
     cr->rectangle(x, y, MAG, MAG);
     if (agent->hasTile()) {
+        cr->begin_new_sub_path();
         cr->arc(x + MAG/2, y + MAG/2, MAG / 2, 0, 2 * M_PI);
+        cr->begin_new_sub_path();
+        draw_text(cr, x + MAG / 4, y, to_string(agent->getTile()->getScore()).c_str());
     }
 }
 
