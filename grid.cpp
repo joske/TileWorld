@@ -171,15 +171,21 @@ void Grid::update() {
     while (agent != agents.end()) {
         Location oldLoc = (*agent)->getLocation();
         (*agent)->update();
-        Location newLoc = (*agent)->getLocation();
-        objects[newLoc.x][newLoc.y] = *agent;
         agent++;
     }
     printGrid();
 }
 
-GridObject* Grid::getObject(int c, int r) {
-    return objects[c][r];
+GridObject* Grid::getObject(int col, int row) {
+    if (row >= ROWS || row < 0) {
+        cerr << " row " << row << " out of bounds" << endl;
+        return NULL;
+    }
+    if (col < 0 || col >= COLS) {
+        cerr << " col " << col << " out of bounds" << endl;
+        return NULL;
+    }
+    return objects[col][row];
 }
 
 void Grid::printGrid() {

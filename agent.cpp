@@ -81,15 +81,21 @@ void Agent::moveToHole() {
         if (newLoc == hole->getLocation()) {
             // we are there, dump the tile
             int sc = grid->dumpTile(tile, hole);
-            tile = NULL;
-            gotTile = false;
-            delete tile;
-            hole = NULL;
-            delete hole;
-            this->score += sc;
-            state = FIND_TILE;
+            if (sc != -1) {
+                gotTile = false;
+                delete tile;
+                delete hole;
+                tile = NULL;
+                hole = NULL;
+                this->score += sc;
+                state = FIND_TILE;
+            } else {
+                // hole disappeared, find a new one
+                state = FIND_HOLE;
+            }
         }
     } else {
+        // hole disappeared, find a new one
         state = FIND_HOLE;
     }
 }
