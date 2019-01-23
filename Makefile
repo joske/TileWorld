@@ -9,7 +9,7 @@ OBJS=$(subst .cpp,.o,$(SRC))
 all: $(APP)
 	
 $(APP): $(OBJS)
-	g++ -o TileWorld $(LDFLAGS) $(OBJS)
+	g++ -o TileWorld $(OBJS) $(LDFLAGS)
 
 .cpp.o: %.c
 	g++ -g -Wall $(CFLAGS) -c $<
