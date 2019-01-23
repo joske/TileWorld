@@ -48,6 +48,16 @@ void Agent::findHole() {
 
 void Agent::moveToTile() {
     TRACE_IN
+    // maybe another tile is now closer?
+    Location ourLoc = Location(x, y);
+    Tile* other = grid->getClosestTile(ourLoc);
+    if (other != NULL) {
+        if (other->getLocation().distance(ourLoc)
+                < tile->getLocation().distance(ourLoc)) {
+            // indeed closer, move to that one instead
+            tile = other;
+        }
+    }
     if (tile != NULL && tile == grid->getObject(tile->getX(), tile->getY())) {
         direction m = getNextLocalMove(this->getLocation(), tile->getLocation());
         cout << *this << " next move " << m << endl;
@@ -72,6 +82,15 @@ void Agent::moveToTile() {
 
 void Agent::moveToHole() {
     TRACE_IN
+    Location ourLoc = Location(x, y);
+    Hole* other = grid->getClosestHole(ourLoc);
+    if (other != NULL) {
+        if (other->getLocation().distance(ourLoc)
+                < hole->getLocation().distance(ourLoc)) {
+            // indeed closer, move to that one instead
+            hole = other;
+        }
+    }
     if (tile != NULL && hole == grid->getObject(hole->getX(), hole->getY())) {
         direction m = getNextLocalMove(this->getLocation(), hole->getLocation());
         cout << *this << " next move " << m << endl;
