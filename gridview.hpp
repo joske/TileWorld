@@ -17,7 +17,7 @@
 
 class GridView: public Gtk::DrawingArea {
     public:
-        GridView(Grid grid);
+        GridView(Grid* grid);
         virtual ~GridView();
 
     protected:
@@ -25,7 +25,7 @@ class GridView: public Gtk::DrawingArea {
         bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
         bool on_timeout();
         private:
-        Grid grid;
+        Grid* grid;
 
         void draw_text(const Cairo::RefPtr<Cairo::Context>& cr, int rectangle_width,
                 int rectangle_height, const char* text);

@@ -132,9 +132,9 @@ Tile* Grid::getClosestTile(Location start) {
 
 void Grid::move(Location from, Location to) {
     GridObject* o = objects[from.x][from.y];
-    objects[from.x][from.y] = NULL;
-    objects[to.x][to.y] = o;
     o->setLocation(to.x, to.y);
+    objects[to.x][to.y] = o;
+    objects[from.x][from.y] = NULL;
 }
 
 bool Grid::pickTile(Tile* tile) {
@@ -143,11 +143,11 @@ bool Grid::pickTile(Tile* tile) {
     while (it != tiles.end()) {
         if ((*it)->getLocation() == tile->getLocation()) {
             tiles.erase(it);
+            createTile(); // create a new tile
             return true;
         }
         it++;
     }
-    createTile(); // create a new tile
     return false;
 }
 
@@ -170,7 +170,6 @@ void Grid::update() {
     vector<Agent*>::iterator agent = agents.begin();
     while (agent != agents.end()) {
         Location oldLoc = (*agent)->getLocation();
-        objects[oldLoc.x][oldLoc.y] = NULL;
         (*agent)->update();
         Location newLoc = (*agent)->getLocation();
         objects[newLoc.x][newLoc.y] = *agent;

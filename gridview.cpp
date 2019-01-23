@@ -12,8 +12,7 @@
 #include <glibmm/main.h>
 #include <string>
 
-GridView::GridView(Grid grid) :
-        grid(grid) {
+GridView::GridView(Grid* grid) : grid(grid) {
     Glib::signal_timeout().connect(sigc::mem_fun(*this, &GridView::on_timeout),
             1000);
 }
@@ -29,7 +28,7 @@ bool GridView::on_timeout() {
                 get_allocation().get_height());
         win->invalidate_rect(r, false);
     }
-    grid.update();
+    grid->update();
     return true;
 }
 
@@ -40,7 +39,7 @@ bool GridView::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
             int x = c * MAG;
             int y = r * MAG;
             cr->set_source_rgb(0, 0, 0);
-            GridObject* o = grid.getObject(c, r);
+            GridObject* o = grid->getObject(c, r);
             if (o != NULL) {
                 switch (o->getType()) {
                     case AGENT:
