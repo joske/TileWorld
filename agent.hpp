@@ -34,6 +34,7 @@ class Agent: public GridObject {
         bool hasTile() {
             return gotTile;
         }
+        int getScore();
 
     private:
         Grid* grid;

@@ -12,9 +12,8 @@
 #include <glibmm/main.h>
 #include <string>
 
-GridView::GridView(Grid* grid) : grid(grid) {
-    Glib::signal_timeout().connect(sigc::mem_fun(*this, &GridView::on_timeout),
-            1000);
+GridView::GridView(Grid* grid, int delay) : grid(grid) {
+    Glib::signal_timeout().connect(sigc::mem_fun(*this, &GridView::on_timeout), delay);
 }
 
 GridView::~GridView() {
@@ -61,6 +60,18 @@ bool GridView::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
             cr->stroke();
         }
     }
+    vector<Agent*> agents = grid->getAgents();
+    vector<Agent*>::iterator agent = agents.begin();
+    int x = COLS * MAG + 20;
+    int y = 20;
+    while (agent != agents.end()) {
+        ostringstream buf;
+        int id = (*agent)->getId();
+        set_color(cr, id);
+        buf << "Agent(" << id << "): " << (*agent)->getScore();
+        draw_text(cr, x, y + id * MAG, buf.str().c_str());
+        agent++;
+    }
     return true;
 }
 
@@ -101,6 +112,9 @@ void GridView::set_color(const Cairo::RefPtr<Cairo::Context>& cr, int id) {
             break;
         case 4:
             cr->set_source_rgb(0, 128, 128);
+            break;
+        case 5:
+            cr->set_source_rgb(128, 0, 128);
             break;
     }
 }

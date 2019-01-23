@@ -7,6 +7,10 @@ int Agent::getId() {
     return id;
 }
 
+int Agent::getScore() {
+    return score;
+}
+
 void Agent::update() {
     switch (state) {
         case IDLE:

@@ -13,7 +13,7 @@ using namespace std;
 
 class Grid {
     public:
-        Grid(int pnumAgents, int pnumTiles, int pnumHoles) {
+        Grid(int pnumAgents, int pnumTiles, int pnumHoles, int pnumObst) {
             numAgents = pnumAgents;
             numTiles = pnumTiles;
             numHoles = pnumHoles;
@@ -32,7 +32,7 @@ class Grid {
             for (int i = 0; i < numHoles; i++) {
                 createHole();
             }
-            for (int i = 0; i < numHoles; i++) {
+            for (int i = 0; i < pnumObst; i++) {
                 createObstacle();
             }
         }

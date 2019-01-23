@@ -10,18 +10,36 @@ using namespace Gtk;
 #endif
 
 int main(int argc, char** argv) {
+    int agents = 6;
+    int tiles = 20;
+    int holes = 20;
+    int obst = 20;
+    int delay = 300;
+
+    if (argc != 1) {
+        // parameters passed
+        if (argc != 6) {
+            cerr << "usage: " << argv[0] << " <agents> <tiles> <holes> <obstacles> <delay>" << endl;
+            return 1;
+        }
+        agents = atoi(argv[1]);
+        tiles = atoi(argv[2]);
+        holes = atoi(argv[3]);
+        obst = atoi(argv[4]);
+        delay = atoi(argv[5]);
+    }
 
     srand(time(NULL));
 #ifndef NOGUI
     auto app = Gtk::Application::create(argc, argv, "TileWorld");
 
     Gtk::Window win;
-    win.set_default_size(COLS * MAG, ROWS * MAG);
-    win.set_title("DrawingArea");
+    win.set_default_size((COLS * MAG) + 200, ROWS * MAG); // space for the scores
+    win.set_title("TileWorld");
 #endif
-    Grid* grid = new Grid(6, 20, 20);
+    Grid* grid = new Grid(agents, tiles, holes, obst);
 #ifndef NOGUI
-    GridView area(grid);
+    GridView area(grid, delay);
     win.add(area);
     area.show();
 #endif

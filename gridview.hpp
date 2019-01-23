@@ -17,7 +17,7 @@
 
 class GridView: public Gtk::DrawingArea {
     public:
-        GridView(Grid* grid);
+        GridView(Grid* grid, int delay);
         virtual ~GridView();
 
     protected:
