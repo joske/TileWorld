@@ -14,71 +14,63 @@ enum object_type {
 
 class GridObject {
     public:
-        GridObject(int xx, int yy, object_type t) :
-                x(xx), y(yy), type(t) {
+        GridObject(const Location& loc, object_type t) :
+                loc(loc), type(t) {
         }
-        GridObject(const GridObject &other) {
-            x = other.x;
-            y = other.y;
-            type = other.type;
-        }
-        ~GridObject() {
-        }
-        object_type getType() {
+        object_type getType() const {
             return type;
         }
-        int getX() {
-            return x;
+        int getX() const {
+            return loc.getX();
         }
-        int getY() {
-            return y;
+        int getY() const {
+            return loc.getY();
         }
-        Location getLocation() {
-            return Location(x, y);
+        const Location& getLocation() const {
+            return loc;
         }
-        void setLocation(const int x, const int y) {
-            this->x = x;
-            this->y = y;
+        void setLocation(const Location& newLoc) {
+	    loc = newLoc;
         }
+
     protected:
-        int x;
-        int y;
+	Location loc;
         object_type type;
-        private:
-        friend std::ostream& operator<<(std::ostream &strm, const GridObject &a) {
-            return strm << "Object(type=" << a.type << ", " << "x=" << a.x << ", y="
-                    << a.y << ")" << endl;
-        }
+
+    friend std::ostream& operator<<(std::ostream &strm, const GridObject &a) {
+        return strm << "Object(type=" << a.type << ", " << "x=" << a.getX() << ", y="
+                    << a.getY() << ")" << endl;
+    }
 };
 
 class Tile: public GridObject {
     public:
-        Tile(int xx, int yy, int s) :
-                GridObject(xx, yy, TILE) {
+        Tile(Location& loc, int s) :
+                GridObject(loc, TILE) {
             score = s;
         }
-        int getScore() {
+        int getScore() const {
             return score;
         }
     private:
         int score;
-        friend std::ostream& operator<<(std::ostream &strm, const Tile &a) {
-            return strm << "Tile(x=" << a.x << ", y=" << a.y << ", score=" << a.score << ")" << endl;
-        }
 
+    friend std::ostream& operator<<(std::ostream &strm, const Tile &a) {
+        return strm << "Tile(x=" << a.getX() << ", y=" << a.getY() << ", score=" << a.score << ")" << endl;
+    }
 };
 
 class Hole: public GridObject {
     public:
-        Hole(int xx, int yy) :
-                GridObject(xx, yy, HOLE) {
+        Hole(Location& loc) :
+                GridObject(loc, HOLE) {
         }
 };
 
 class Obstacle: public GridObject {
     public:
-        Obstacle(int xx, int yy) :
-                GridObject(xx, yy, OBSTACLE) {
+        Obstacle(Location& loc) :
+                GridObject(loc, OBSTACLE) {
         }
 };
 

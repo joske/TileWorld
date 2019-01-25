@@ -36,18 +36,18 @@ class Grid {
                 createObstacle();
             }
         }
-        vector<Agent*> getAgents();
+        const vector<Agent*>& getAgents() const;
         void start();
         void update();
-        GridObject* getObject(int x, int y);
-        Hole* getClosestHole(Location start);
-        Tile* getClosestTile(Location start);
-        bool possibleMove(Location from, direction m);
-        bool allowedLocation(Location loc);
-        void move(Location from, Location to);
+        GridObject* getObject(int x, int y) const;
+        Hole* getClosestHole(const Location& start) const;
+        Tile* getClosestTile(const Location& start) const;
+        bool possibleMove(const Location& from, const direction m) const;
+        bool allowedLocation(const Location& loc) const;
+        void move(const Location& from, const Location& to);
         bool pickTile(Tile* tile);
         int dumpTile(Tile* tile, Hole *hole);
-        private:
+    private:
         int numAgents;
         int numHoles;
         int numTiles;
@@ -61,14 +61,13 @@ class Grid {
         void createTile();
         void createHole();
         void createObstacle();
-        Location randomFreeLocation();
-        void printGrid();
+        Location randomFreeLocation() const;
+        void printGrid() const; 
 
-        friend std::ostream& operator<<(std::ostream &strm, const Grid &a) {
-            return strm << "Grid(agents=" << a.agents.size() << ", tiles="
-                    << a.tiles.size() << ", holes=" << a.holes.size() << endl;
-        }
-
+    friend std::ostream& operator<<(std::ostream &strm, const Grid &a) {
+        return strm << "Grid(agents=" << a.agents.size() << ", tiles="
+                << a.tiles.size() << ", holes=" << a.holes.size() << endl;
+    }
 };
 
 #endif

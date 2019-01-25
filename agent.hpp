@@ -15,8 +15,8 @@ class Grid;
 
 class Agent: public GridObject {
     public:
-        Agent(Grid* g, int pid, int x, int y) :
-                GridObject(x, y, AGENT) {
+        Agent(Grid* g, int pid, Location& loc) :
+                GridObject(loc, AGENT) {
             score = 0;
             id = pid;
             state = IDLE;
@@ -53,7 +53,7 @@ class Agent: public GridObject {
         direction getNextLocalMove(Location from, Location to);
 
         friend std::ostream& operator<<(std::ostream &strm, const Agent &a) {
-            return strm << "Agent(id=" << a.id << ", x=" << a.x << ", y=" << a.y << ", hasTile=" << a.gotTile << ", score=" << a.score << ", state=" << a.state << ")" << endl;
+            return strm << "Agent(id=" << a.id << ", x=" << a.getX() << ", y=" << a.getY() << ", hasTile=" << a.gotTile << ", score=" << a.score << ", state=" << a.state << ")" << endl;
         }
 
 };

@@ -37,7 +37,7 @@ void Agent::idle() {
 
 void Agent::findTile() {
     TRACE_IN
-    tile = grid->getClosestTile(Location(x, y));
+    tile = grid->getClosestTile(loc);
     cout << *this << " found tile " << *tile << endl;
     state = MOVE_TO_TILE;
 }
@@ -45,7 +45,7 @@ void Agent::findTile() {
 void Agent::findHole() {
     TRACE_IN
     ;
-    hole = grid->getClosestHole(Location(x, y));
+    hole = grid->getClosestHole(loc);
     cout << *this << " found hole " << *hole << endl;
     state = MOVE_TO_HOLE;
 }
@@ -53,21 +53,19 @@ void Agent::findHole() {
 void Agent::moveToTile() {
     TRACE_IN
     // maybe another tile is now closer?
-    Location ourLoc = Location(x, y);
-    Tile* other = grid->getClosestTile(ourLoc);
+    Tile* other = grid->getClosestTile(loc);
     if (other != NULL) {
-        if (other->getLocation().distance(ourLoc)
-                < tile->getLocation().distance(ourLoc)) {
+        if (other->getLocation().distance(loc)
+                < tile->getLocation().distance(loc)) {
             // indeed closer, move to that one instead
             tile = other;
         }
     }
     if (tile != NULL && tile == grid->getObject(tile->getX(), tile->getY())) {
         direction m = getNextLocalMove(this->getLocation(), tile->getLocation());
-        cout << *this << " next move " << m << endl;
-        Location oldLoc = Location(x, y);
-        Location newLoc = oldLoc.nextLocation(m);
-        grid->move(oldLoc, newLoc);
+        Location newLoc = loc.nextLocation(m);
+        grid->move(loc, newLoc);
+	setLocation(newLoc);
         if (newLoc == tile->getLocation()) {
             // we are there, pick the tile
             bool tileStilThere = grid->pickTile(tile);
@@ -86,11 +84,10 @@ void Agent::moveToTile() {
 
 void Agent::moveToHole() {
     TRACE_IN
-    Location ourLoc = Location(x, y);
-    Hole* other = grid->getClosestHole(ourLoc);
+    Hole* other = grid->getClosestHole(loc);
     if (other != NULL) {
-        if (other->getLocation().distance(ourLoc)
-                < hole->getLocation().distance(ourLoc)) {
+        if (other->getLocation().distance(loc)
+                < hole->getLocation().distance(loc)) {
             // indeed closer, move to that one instead
             hole = other;
         }
@@ -98,9 +95,9 @@ void Agent::moveToHole() {
     if (tile != NULL && hole == grid->getObject(hole->getX(), hole->getY())) {
         direction m = getNextLocalMove(this->getLocation(), hole->getLocation());
         cout << *this << " next move " << m << endl;
-        Location oldLoc = Location(x, y);
-        Location newLoc = oldLoc.nextLocation(m);
-        grid->move(oldLoc, newLoc);
+        Location newLoc = loc.nextLocation(m);
+        grid->move(loc, newLoc);
+	setLocation(newLoc);
         if (newLoc == hole->getLocation()) {
             // we are there, dump the tile
             int sc = grid->dumpTile(tile, hole);

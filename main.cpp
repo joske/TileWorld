@@ -37,13 +37,13 @@ int main(int argc, char** argv) {
     win.set_default_size((COLS * MAG) + 200, ROWS * MAG); // space for the scores
     win.set_title("TileWorld");
 #endif
-    Grid* grid = new Grid(agents, tiles, holes, obst);
+    Grid grid(agents, tiles, holes, obst);
 #ifndef NOGUI
     GridView area(grid, delay);
     win.add(area);
     area.show();
 #endif
-    grid->start();
+    grid.start();
 #ifndef NOGUI
     return app->run(win);
 #endif

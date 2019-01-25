@@ -2,11 +2,11 @@
 #include <iostream>
 #include "searchstrategy.hpp"
 
-int Location::distance(Location other) {
+int Location::distance(const Location& other) const {
     return abs(x - other.x) + abs(y - other.y);
 }
 
-Location Location::nextLocation(direction m) {
+Location Location::nextLocation(const direction m) const {
     int nx = x;
     int ny = y;
 
@@ -27,6 +27,3 @@ Location Location::nextLocation(direction m) {
     return Location(nx, ny);
 }
 
-std::ostream& operator<<(std::ostream &strm, const Location &l) {
-    return strm << "Location(" << l.x << ", " << l.y << ")";
-}

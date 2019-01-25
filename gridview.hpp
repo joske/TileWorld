@@ -17,15 +17,15 @@
 
 class GridView: public Gtk::DrawingArea {
     public:
-        GridView(Grid* grid, int delay);
+        GridView(Grid& grid, int delay);
         virtual ~GridView();
 
     protected:
         //Override default signal handler:
         bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
         bool on_timeout();
-        private:
-        Grid* grid;
+    private:
+        Grid& grid;
 
         void draw_text(const Cairo::RefPtr<Cairo::Context>& cr, int rectangle_width,
                 int rectangle_height, const char* text);

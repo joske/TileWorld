@@ -11,16 +11,22 @@ class Location {
         Location(int xx, int yy) :
                 x(xx), y(yy) {
         }
-        ~Location() {
-        }
-        bool operator==(const Location& loc1) {
+
+        bool operator==(const Location& loc1) const {
             return loc1.x == x && loc1.y == y;
         }
-        int x, y;
-        int distance(Location other);
-        Location nextLocation(direction m);
-};
+        int distance(const Location& other) const;
+        Location nextLocation(const direction m) const;
 
-std::ostream& operator<<(std::ostream &strm, const Location &l);
+	int getX() const { return x; }
+	int getY() const { return y; }
+
+    private:
+        int x, y;
+
+    friend std::ostream& operator<<(std::ostream &strm, const Location &l) {
+            return strm << "Location(" << l.x << ", " << l.y << ")";
+    }
+};
 
 #endif
