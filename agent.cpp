@@ -3,11 +3,11 @@
 #include <limits.h>
 #include "main.hpp"
 
-int Agent::getId() {
+int Agent::getId() const {
     return id;
 }
 
-int Agent::getScore() {
+int Agent::getScore() const {
     return score;
 }
 
@@ -15,12 +15,6 @@ void Agent::update() {
     switch (state) {
         case IDLE:
             idle();
-            break;
-        case FIND_HOLE:
-            findHole();
-            break;
-        case FIND_TILE:
-            findTile();
             break;
         case MOVE_TO_TILE:
             moveToTile();
@@ -32,69 +26,36 @@ void Agent::update() {
 }
 
 void Agent::idle() {
-    state = FIND_TILE;
-}
-
-void Agent::findTile() {
-    TRACE_IN
-    tile = grid->getClosestTile(loc);
-    cout << *this << " found tile " << *tile << endl;
     state = MOVE_TO_TILE;
-}
-
-void Agent::findHole() {
-    TRACE_IN
-    ;
-    hole = grid->getClosestHole(loc);
-    cout << *this << " found hole " << *hole << endl;
-    state = MOVE_TO_HOLE;
 }
 
 void Agent::moveToTile() {
     TRACE_IN
     // maybe another tile is now closer?
-    Tile* other = grid->getClosestTile(loc);
-    if (other != NULL) {
-        if (other->getLocation().distance(loc)
-                < tile->getLocation().distance(loc)) {
-            // indeed closer, move to that one instead
-            tile = other;
-        }
-    }
-    if (tile != NULL && tile == grid->getObject(tile->getX(), tile->getY())) {
-        direction m = getNextLocalMove(this->getLocation(), tile->getLocation());
+    Tile* otherTile = grid->getClosestTile(loc);
+    if (otherTile != NULL) {
+        cout << *this << " move to tile " << *otherTile << endl;
+        direction m = getNextLocalMove(this->getLocation(), otherTile->getLocation());
         Location newLoc = loc.nextLocation(m);
         grid->move(loc, newLoc);
 	setLocation(newLoc);
-        if (newLoc == tile->getLocation()) {
+        if (newLoc == otherTile->getLocation()) {
             // we are there, pick the tile
-            bool tileStilThere = grid->pickTile(tile);
+            bool tileStilThere = grid->pickTile(otherTile);
             if (tileStilThere) {
-                gotTile = true;
-                state = FIND_HOLE;
-            } else {
-                tile = NULL;
-                state = FIND_TILE;
+		tile = otherTile;
+                state = MOVE_TO_HOLE;
             }
         }
-    } else {
-        state = FIND_TILE;
     }
 }
 
 void Agent::moveToHole() {
     TRACE_IN
-    Hole* other = grid->getClosestHole(loc);
-    if (other != NULL) {
-        if (other->getLocation().distance(loc)
-                < hole->getLocation().distance(loc)) {
-            // indeed closer, move to that one instead
-            hole = other;
-        }
-    }
-    if (tile != NULL && hole == grid->getObject(hole->getX(), hole->getY())) {
+    Hole* hole = grid->getClosestHole(loc);
+    if (hole != NULL && tile != NULL) {
         direction m = getNextLocalMove(this->getLocation(), hole->getLocation());
-        cout << *this << " next move " << m << endl;
+        cout << *this << " next move " << m << " to hole " << *hole << endl;
         Location newLoc = loc.nextLocation(m);
         grid->move(loc, newLoc);
 	setLocation(newLoc);
@@ -102,25 +63,17 @@ void Agent::moveToHole() {
             // we are there, dump the tile
             int sc = grid->dumpTile(tile, hole);
             if (sc != -1) {
-                gotTile = false;
                 delete tile;
                 delete hole;
                 tile = NULL;
-                hole = NULL;
                 this->score += sc;
-                state = FIND_TILE;
-            } else {
-                // hole disappeared, find a new one
-                state = FIND_HOLE;
+                state = MOVE_TO_TILE;
             }
         }
-    } else {
-        // hole disappeared, find a new one
-        state = FIND_HOLE;
     }
 }
 
-direction Agent::getNextLocalMove(Location from, Location to) {
+direction Agent::getNextLocalMove(const Location& from, const Location& to) {
     TRACE_IN
     int r = (rand() % 100) + 1;
     if (r > 80) {

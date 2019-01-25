@@ -17,6 +17,8 @@ class GridObject {
         GridObject(const Location& loc, object_type t) :
                 loc(loc), type(t) {
         }
+	virtual ~GridObject() {}
+
         object_type getType() const {
             return type;
         }
@@ -33,13 +35,17 @@ class GridObject {
 	    loc = newLoc;
         }
 
+	virtual std::ostream& print(std::ostream &strm) const {
+            return strm << "Object(type=" << type << ", " << "x=" << getX() << ", y="
+                    << getY() << ")" << endl;
+	}
+
     protected:
 	Location loc;
         object_type type;
 
     friend std::ostream& operator<<(std::ostream &strm, const GridObject &a) {
-        return strm << "Object(type=" << a.type << ", " << "x=" << a.getX() << ", y="
-                    << a.getY() << ")" << endl;
+	return a.print(strm);
     }
 };
 
@@ -52,12 +58,13 @@ class Tile: public GridObject {
         int getScore() const {
             return score;
         }
+
+	virtual std::ostream& print(std::ostream &strm) const {
+        	return strm << "Tile(x=" << getX() << ", y=" << getY() << ", score=" << score << ")" << endl;
+	}
+
     private:
         int score;
-
-    friend std::ostream& operator<<(std::ostream &strm, const Tile &a) {
-        return strm << "Tile(x=" << a.getX() << ", y=" << a.getY() << ", score=" << a.score << ")" << endl;
-    }
 };
 
 class Hole: public GridObject {
