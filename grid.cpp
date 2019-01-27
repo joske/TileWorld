@@ -100,14 +100,12 @@ Hole* Grid::getClosestHole(const Location& start) const {
     TRACE_IN
     int minDist = INT_MAX;
     Hole* best = NULL;
-    vector<Hole*>::const_iterator hole = holes.begin();
-    while (hole != holes.end()) {
-        int dist = (*hole)->getLocation().distance(start);
+    for (Hole* hole : holes) {
+        int dist = hole->getLocation().distance(start);
         if (dist < minDist) {
             minDist = dist;
-            best = *hole;
+            best = hole;
         }
-        hole++;
     }
     return best;
 }
@@ -116,15 +114,13 @@ Tile* Grid::getClosestTile(const Location& start) const {
     TRACE_IN
     int minDist = INT_MAX;
     Tile* best = NULL;
-    vector<Tile*>::const_iterator tile = tiles.begin();
-    while (tile != tiles.end()) {
-        int dist = (*tile)->getLocation().distance(start);
+    std::for_each(tiles.begin(), tiles.end(), [&](Tile* tile) {
+        int dist = tile->getLocation().distance(start);
         if (dist < minDist) {
             minDist = dist;
-            best = *tile;
+            best = tile;
         }
-        tile++;
-    }
+    });
     return best;
 }
 
@@ -164,11 +160,13 @@ int Grid::dumpTile(Tile* tile, Hole *hole) {
 
 void Grid::update() {
     TRACE_IN
-    vector<Agent*>::iterator agent = agents.begin();
-    while (agent != agents.end()) {
-        (*agent)->update();
-        agent++;
-    }
+    //for_each(agents.begin(), agents.end(),std::bind(std::mem_fun(&Agent::update), std::placeholders::_1));
+    for_each(agents.begin(), agents.end(),[](Agent* agent) { agent->update(); });
+/*
+    for (Agent* agent : agents) {
+        agent->update();
+    }getNextLocalMove
+*/
     printGrid();
 }
 

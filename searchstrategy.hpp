@@ -9,7 +9,7 @@
 #define SEARCHSTRATEGY_HPP_
 
 enum direction {
-    UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3
+    UP = 0, DOWN = 1, LEFT = 2, RIGHT = 3, STUCK = 99
 };
 
 #endif /* SEARCHSTRATEGY_HPP_ */

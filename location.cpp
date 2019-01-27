@@ -23,6 +23,8 @@ Location Location::nextLocation(const direction m) const {
         case RIGHT:
             nx++;
             break;
+        case STUCK:
+	    break;
     }
     return Location(nx, ny);
 }

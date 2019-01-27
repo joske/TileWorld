@@ -75,19 +75,26 @@ void Agent::moveToHole() {
 
 direction Agent::getNextLocalMove(const Location& from, const Location& to) {
     TRACE_IN
+    cout << *this << " move from " << from << " to " << to << endl;
     int r = (rand() % 100) + 1;
     if (r > 80) {
         cout << *this << " random move" << endl;
         r = (rand() % 4);
         direction d = static_cast<direction>(r);
+	int count = 0;
         while (!grid->possibleMove(from, d)) {
             r = (rand() % 4);
             d = static_cast<direction>(r);
+	    if (count++ == 1000) break;
         }
+	if (count >= 1000) {
+	    cout << *this << " is stuck " << endl;
+	    return STUCK; 
+	}
         return d;
     }
     int min_dist = INT_MAX;
-    direction best_move;
+    direction best_move = STUCK;
     for (int dir = 0; dir < 4; dir++) {
         direction d = static_cast<direction>(dir);
         Location l = from.nextLocation(d);
