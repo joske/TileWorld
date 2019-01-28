@@ -61,17 +61,15 @@ bool GridView::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
         }
     }
     const vector<Agent*>& agents = grid.getAgents();
-    vector<Agent*>::const_iterator agent = agents.begin();
-    int x = COLS * MAG + 20;
-    int y = 20;
-    while (agent != agents.end()) {
-        ostringstream buf;
-        int id = (*agent)->getId();
+    const int x = COLS * MAG + 20;
+    const int y = 20;
+    for_each(agents.begin(), agents.end(),[&](Agent* agent) { 
+	ostringstream buf;
+        int id = agent->getId();
         set_color(cr, id);
-        buf << "Agent(" << id << "): " << (*agent)->getScore();
+        buf << "Agent(" << id << "): " << agent->getScore();
         draw_text(cr, x, y + id * MAG, buf.str().c_str());
-        agent++;
-    }
+    });
     return true;
 }
 
