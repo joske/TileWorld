@@ -132,28 +132,21 @@ void Grid::move(const Location& from, const Location& to) {
 
 bool Grid::pickTile(Tile* tile) {
     TRACE_IN
-    vector<Tile*>::iterator it = tiles.begin();
-    while (it != tiles.end()) {
-        if ((*it)->getLocation() == tile->getLocation()) {
-            tiles.erase(it);
-            createTile(); // create a new tile
-            return true;
-        }
-        it++;
+    vector<Tile*>::iterator it = std::find(tiles.begin(), tiles.end(), tile);
+    if (it != tiles.end()) {
+        tiles.erase(it);
+        createTile(); // create a new tile
     }
-    return false;
+    return it != tiles.end();
 }
 
 int Grid::dumpTile(Tile* tile, Hole *hole) {
     TRACE_IN
-    vector<Hole*>::iterator it = holes.begin();
-    while (it != holes.end()) {
-        if ((*it)->getLocation() == hole->getLocation()) {
-            holes.erase(it);
-            createHole(); // add a new hole
-            return tile->getScore();
-        }
-        it++;
+    vector<Hole*>::iterator it = std::find(holes.begin(), holes.end(), hole);
+    if (it != holes.end()) {
+        holes.erase(it);
+        createHole(); // and a new hole
+        return tile->getScore();
     }
     return -1;
 }
