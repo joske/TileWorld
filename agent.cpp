@@ -89,8 +89,8 @@ direction Agent::getNextLocalMove(const Location& from, const Location& to) {
         }
 	if (count >= 1000) {
 	    cout << *this << " is stuck " << endl;
-	    return STUCK; 
-	}
+            return STUCK;
+        }
         return d;
     }
     int min_dist = INT_MAX;

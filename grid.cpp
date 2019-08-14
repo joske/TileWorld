@@ -114,13 +114,13 @@ Tile* Grid::getClosestTile(const Location& start) const {
     TRACE_IN
     int minDist = INT_MAX;
     Tile* best = NULL;
-    std::for_each(tiles.begin(), tiles.end(), [&](Tile* tile) {
+    for (Tile* tile : tiles) {
         int dist = tile->getLocation().distance(start);
         if (dist < minDist) {
             minDist = dist;
             best = tile;
         }
-    });
+    }
     return best;
 }
 
@@ -160,13 +160,9 @@ int Grid::dumpTile(Tile* tile, Hole *hole) {
 
 void Grid::update() {
     TRACE_IN
-    //for_each(agents.begin(), agents.end(),std::bind(std::mem_fun(&Agent::update), std::placeholders::_1));
-    for_each(agents.begin(), agents.end(),[](Agent* agent) { agent->update(); });
-/*
     for (Agent* agent : agents) {
         agent->update();
-    }getNextLocalMove
-*/
+    }
     printGrid();
 }
 
