@@ -150,7 +150,7 @@ int Grid::dumpTile(Tile* tile, Hole *hole) {
     while (it != holes.end()) {
         if ((*it)->getLocation() == hole->getLocation()) {
             holes.erase(it);
-            createHole(); // and a new hole
+            createHole(); // add a new hole
             return tile->getScore();
         }
         it++;
