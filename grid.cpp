@@ -172,6 +172,7 @@ GridObject* Grid::getObject(int col, int row) const {
 }
 
 void Grid::printGrid() const {
+#ifdef DEBUG
     TRACE_IN
     for (int y = 0; y < ROWS; y++) {
         for (int x = 0; x < COLS; x++) {
@@ -199,6 +200,7 @@ void Grid::printGrid() const {
         }
         cout << endl;
     }
+#endif
 }
 
 const vector<Agent*>& Grid::getAgents() const {
