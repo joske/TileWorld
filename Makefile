@@ -1,7 +1,7 @@
 APP=TileWorld
 
-CFLAGS=$(shell pkg-config --cflags gtkmm-3.0) $(shell wx-config --cppflags)
-LDFLAGS=$(shell pkg-config --libs gtkmm-3.0) $(shell wx-config --libs)
+CFLAGS=$(shell wx-config --cppflags)
+LDFLAGS=$(shell wx-config --libs)
 
 SRC=$(shell find . -name '*.cpp')
 OBJS=$(subst .cpp,.o,$(SRC))
