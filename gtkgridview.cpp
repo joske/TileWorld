@@ -64,7 +64,7 @@ bool GridView::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
     const int x = COLS * MAG + 20;
     const int y = 20;
     for_each(agents.begin(), agents.end(),[&](Agent* agent) { 
-	ostringstream buf;
+	    ostringstream buf;
         int id = agent->getId();
         set_color(cr, id);
         buf << "Agent(" << id << "): " << agent->getScore();

@@ -18,7 +18,7 @@ MyApp::MyApp()
 bool MyApp::OnInit()
 {
     wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
-    frame = new wxFrame((wxFrame *)NULL, -1,  wxT("Hello wxDC"), wxPoint(50,50), wxSize(800,600));
+    frame = new wxFrame((wxFrame *)NULL, -1,  wxT("TileWorld"), wxPoint(50,50), wxSize((COLS * MAG) + 200, ROWS * MAG));
  	
     drawPane = new BasicDrawPane( (wxFrame*) frame );
     sizer->Add(drawPane, 1, wxEXPAND);
@@ -31,35 +31,8 @@ bool MyApp::OnInit()
 } 
 
 BEGIN_EVENT_TABLE(BasicDrawPane, wxPanel)
-// some useful events
-/*
- EVT_MOTION(BasicDrawPane::mouseMoved)
- EVT_LEFT_DOWN(BasicDrawPane::mouseDown)
- EVT_LEFT_UP(BasicDrawPane::mouseReleased)
- EVT_RIGHT_DOWN(BasicDrawPane::rightClick)
- EVT_LEAVE_WINDOW(BasicDrawPane::mouseLeftWindow)
- EVT_KEY_DOWN(BasicDrawPane::keyPressed)
- EVT_KEY_UP(BasicDrawPane::keyReleased)
- EVT_MOUSEWHEEL(BasicDrawPane::mouseWheelMoved)
- */
-
-// catch paint events
 EVT_PAINT(BasicDrawPane::paintEvent)
-
 END_EVENT_TABLE()
-
-
-// some useful events
-/*
- void BasicDrawPane::mouseMoved(wxMouseEvent& event) {}
- void BasicDrawPane::mouseDown(wxMouseEvent& event) {}
- void BasicDrawPane::mouseWheelMoved(wxMouseEvent& event) {}
- void BasicDrawPane::mouseReleased(wxMouseEvent& event) {}
- void BasicDrawPane::rightClick(wxMouseEvent& event) {}
- void BasicDrawPane::mouseLeftWindow(wxMouseEvent& event) {}
- void BasicDrawPane::keyPressed(wxKeyEvent& event) {}
- void BasicDrawPane::keyReleased(wxKeyEvent& event) {}
- */
 
 BasicDrawPane::BasicDrawPane(wxFrame* parent) :
 wxPanel(parent), grid(agents, tiles, holes, obst)
@@ -75,6 +48,7 @@ void BasicDrawPane::OnTimer(wxCommandEvent& event)
     Refresh();
     Update();
 }
+
 /*
  * Called by the system of by wxWidgets when the panel needs
  * to be redrawn. You can also trigger this call by
@@ -108,22 +82,22 @@ void BasicDrawPane::paintNow()
 void set_color(wxDC&  dc, int id) {
     switch (id) {
         case 0:
-            dc.SetPen( wxPen( wxColor(0,0,255), 10 ) );
+            dc.SetPen( wxPen( wxColor(0,0,255), 2 ) );
             break;
         case 1:
-            dc.SetPen( wxPen( wxColor(255, 0, 0), 10 ) );
+            dc.SetPen( wxPen( wxColor(255, 0, 0), 2 ) );
             break;
         case 2:
-            dc.SetPen( wxPen( wxColor(0, 255, 0), 10 ) );
+            dc.SetPen( wxPen( wxColor(0, 255, 0), 2 ) );
             break;
         case 3:
-            dc.SetPen( wxPen( wxColor(128, 128, 0), 10 ) );
+            dc.SetPen( wxPen( wxColor(128, 128, 0), 2 ) );
             break;
         case 4:
-            dc.SetPen( wxPen( wxColor(0, 128, 128), 10 ) );
+            dc.SetPen( wxPen( wxColor(0, 128, 128), 2 ) );
             break;
         case 5:
-            dc.SetPen( wxPen( wxColor(128, 0, 128), 10 ) );
+            dc.SetPen( wxPen( wxColor(128, 0, 128), 2 ) );
             break;
     }
 }
@@ -135,8 +109,10 @@ void draw_text(wxDC&  dc, int x, int y, const char* text) {
 void drawTile(wxDC&  dc, GridObject* o,
         int x, int y) {
     Tile* tile = reinterpret_cast<Tile*>(o);
+    dc.SetPen( wxPen( wxColor(0, 0, 0), 2 ) );
     dc.DrawCircle( wxPoint(x + MAG/2, y + MAG/2), MAG/2);
     draw_text(dc, x + MAG / 4, y, to_string(tile->getScore()).c_str());
+    dc.SetBrush(*wxTRANSPARENT_BRUSH);
 }
 
 void drawAgent(wxDC&  dc, GridObject* o,
@@ -144,12 +120,24 @@ void drawAgent(wxDC&  dc, GridObject* o,
     Agent* agent = reinterpret_cast<Agent*>(o);
     set_color(dc, agent->getId());
     dc.DrawRectangle(x, y, MAG, MAG);
-    // if (agent->hasTile()) {
-    //     cr->begin_new_sub_path();
-    //     cr->arc(x + MAG/2, y + MAG/2, MAG / 2, 0, 2 * M_PI);
-    //     cr->begin_new_sub_path();
-    //     draw_text(cr, x + MAG / 4, y, to_string(agent->getTile()->getScore()).c_str());
-    // }
+    if (agent->hasTile()) {
+        dc.DrawCircle( wxPoint(x + MAG/2, y + MAG/2), MAG/2);
+        draw_text(dc, x + MAG / 4, y, to_string(agent->getTile()->getScore()).c_str());
+    }
+}
+
+void drawObstacle(wxDC&  dc, int x, int y) {
+    dc.SetBrush(*wxBLACK_BRUSH);
+    dc.SetPen( wxPen( wxColor(0, 0, 0), 2 ) );
+    dc.DrawRectangle(x, y, MAG, MAG);
+    dc.SetBrush(*wxTRANSPARENT_BRUSH);
+}
+
+void drawHole(wxDC&  dc, int x, int y) {
+    dc.SetBrush(*wxBLACK_BRUSH);
+    dc.SetPen( wxPen( wxColor(0, 0, 0), 2 ) );
+    dc.DrawCircle( wxPoint(x + MAG/2, y + MAG/2), MAG/2);
+    dc.SetBrush(*wxTRANSPARENT_BRUSH);
 }
 
 /*
@@ -170,13 +158,13 @@ void BasicDrawPane::render(wxDC&  dc)
                         drawAgent(dc, o, x, y);
                         break;
                     case HOLE:
-                        dc.DrawCircle( wxPoint(x + MAG/2, y + MAG/2), MAG/2);
-                        break;
+                        drawHole(dc, x, y);
+                         break;
                     case TILE:
                         drawTile(dc, o, x, y);
                         break;
                     case OBSTACLE:
-                        dc.DrawRectangle(x, y, MAG, MAG);
+                        drawObstacle(dc, x, y);
                         break;
                 }
             }
