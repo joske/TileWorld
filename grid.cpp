@@ -3,7 +3,9 @@
 #include <iostream>
 #include <unistd.h>
 #include <limits.h>
+#ifndef NOGUI
 #include <gtkmm.h>
+#endif
 #include "main.hpp"
 
 void Grid::start(void) {

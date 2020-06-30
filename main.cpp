@@ -9,6 +9,7 @@
 using namespace Gtk;
 #endif
 
+#ifndef WXGUI
 int main(int argc, char** argv) {
     int agents = 6;
     int tiles = 20;
@@ -48,3 +49,4 @@ int main(int argc, char** argv) {
     return app->run(win);
 #endif
 }
+#endif /* WXGUI */

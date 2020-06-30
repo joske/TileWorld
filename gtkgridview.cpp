@@ -6,7 +6,7 @@
  */
 
 #ifndef NOGUI
-#include "gridview.hpp"
+#include "gtkgridview.hpp"
 #include <cairomm/context.h>
 #include <cmath>
 #include <glibmm/main.h>
