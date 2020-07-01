@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <algorithm>
-#ifndef NOGUI
+#ifdef GTKGUI
 #include <gtkmm.h>
 #endif
 #include "main.hpp"

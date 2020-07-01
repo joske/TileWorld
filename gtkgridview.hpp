@@ -5,7 +5,7 @@
  *      Author: jos
  */
 
-#ifndef NOGUI
+#ifdef GTKGUI
 #ifndef GRIDVIEW_HPP_
 #define GRIDVIEW_HPP_
 

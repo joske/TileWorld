@@ -2,8 +2,8 @@
 #include <time.h>
 #include <stdlib.h>
 
-#ifndef NOGUI
-#include "gridview.hpp"
+#ifdef GTKGUI
+#include "gtkgridview.hpp"
 #include <gtkmm/application.h>
 #include <gtkmm/window.h>
 using namespace Gtk;
@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
     }
 
     srand(time(NULL));
-#ifndef NOGUI
+#ifdef GTKGUI
     auto app = Gtk::Application::create(argc, argv, "TileWorld");
 
     Gtk::Window win;
@@ -43,13 +43,13 @@ int main(int argc, char** argv) {
     win.set_title("TileWorld");
 #endif
     Grid grid(agents, tiles, holes, obst);
-#ifndef NOGUI
+#ifdef GTKGUI
     GridView area(grid, delay);
     win.add(area);
     area.show();
 #endif
     grid.start();
-#ifndef NOGUI
+#ifdef GTKGUI
     return app->run(win);
 #endif
 }
