@@ -11,7 +11,7 @@ bool MyApp::OnInit()
     int tiles = 20;
     int holes = 20;
     int obst = 20;
-    int delay = 1000;
+    int delay = 300;
 
     if (argc != 1) {
         // parameters passed
@@ -184,8 +184,8 @@ void BasicDrawPane::render(wxDC&  dc)
     for (Agent* agent : grid.getAgents()) {
 	    ostringstream buf;
         int id = agent->getId();
-        set_color(dc, id);
         buf << "Agent(" << id << "): " << agent->getScore();
+        set_color(dc, id);
         draw_text(dc, x, y + id * MAG, buf.str().c_str());
     }
 }
