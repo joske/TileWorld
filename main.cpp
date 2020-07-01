@@ -9,7 +9,11 @@
 using namespace Gtk;
 #endif
 
-#ifndef WXGUI
+#ifdef WXGUI
+#include "wxgridview.hpp"
+
+IMPLEMENT_APP(MyApp)
+#else
 int main(int argc, char** argv) {
     int agents = 6;
     int tiles = 20;

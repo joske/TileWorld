@@ -12,7 +12,7 @@ class BasicDrawPane : public wxPanel
 {
     
 public:
-    BasicDrawPane(wxFrame* parent);
+    BasicDrawPane(wxFrame* parent, int agents, int tiles, int holes, int obst, int delay);
     
     void paintEvent(wxPaintEvent & evt);
     void paintNow();
@@ -41,7 +41,7 @@ private:
 class MyApp : public wxApp
 {
 public:
-    MyApp();
+    MyApp() {};
     virtual ~MyApp() {};
 
     virtual bool OnInit();
