@@ -3,6 +3,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <limits.h>
+#include <algorithm>
 #ifndef NOGUI
 #include <gtkmm.h>
 #endif

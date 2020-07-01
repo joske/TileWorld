@@ -9,10 +9,10 @@ OBJS=$(subst .cpp,.o,$(SRC))
 all: $(APP)
 	
 $(APP): $(OBJS)
-	g++ -o TileWorld $(OBJS) $(LDFLAGS)
+	clang++ -fPIE -o TileWorld $(OBJS) $(LDFLAGS)
 
 .cpp.o: %.c
-	clang++ -g -std=c++17 -Wall -DNOGUI=1 -DWXGUI=1 $(CFLAGS) -c $<
+	clang++ -g -std=c++17 -fPIE -Werror -DNOGUI=1 -DWXGUI=1 $(CFLAGS) -c $<
 
 clean: 
 	rm -f $(OBJS) TileWorld
