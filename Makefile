@@ -1,8 +1,8 @@
 APP=TileWorld
 COMPILER=clang++
 #COMPILER=g++
-CFLAGS=-fPIE -Werror -std=c++17 -g
-LDFLAGS=-fPIE -std=c++17 -g
+CFLAGS=-O2 -Werror -std=c++17 -g #-DDEBUGGING=1
+LDFLAGS=-std=c++17 -g
 
 ifeq ($(GUI), gtk)
 	CFLAGS+=$(shell pkg-config --cflags gtkmm-3.0) -DGTKGUI=1

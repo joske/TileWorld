@@ -34,7 +34,7 @@ void Agent::moveToTile() {
     // maybe another tile is now closer?
     Tile* otherTile = grid->getClosestTile(loc);
     if (otherTile != NULL) {
-        cout << *this << " move to tile " << *otherTile << endl;
+        LDEBUG(*this << " move to tile " << *otherTile)
         direction m = getNextLocalMove(this->getLocation(), otherTile->getLocation());
         Location newLoc = loc.nextLocation(m);
         grid->move(loc, newLoc);
@@ -55,7 +55,7 @@ void Agent::moveToHole() {
     Hole* hole = grid->getClosestHole(loc);
     if (hole != NULL && tile != NULL) {
         direction m = getNextLocalMove(this->getLocation(), hole->getLocation());
-        cout << *this << " next move " << m << " to hole " << *hole << endl;
+        LDEBUG(*this << " next move " << m << " to hole " << *hole)
         Location newLoc = loc.nextLocation(m);
         grid->move(loc, newLoc);
 	setLocation(newLoc);
@@ -75,10 +75,10 @@ void Agent::moveToHole() {
 
 direction Agent::getNextLocalMove(const Location& from, const Location& to) {
     TRACE_IN
-    cout << *this << " move from " << from << " to " << to << endl;
+    LDEBUG(*this << " move from " << from << " to " << to)
     int r = (rand() % 100) + 1;
     if (r > 80) {
-        cout << *this << " random move" << endl;
+        LDEBUG(*this << " random move")
         r = (rand() % 4);
         direction d = static_cast<direction>(r);
 	int count = 0;
@@ -88,7 +88,7 @@ direction Agent::getNextLocalMove(const Location& from, const Location& to) {
 	    if (count++ == 1000) break;
         }
 	if (count >= 1000) {
-	    cout << *this << " is stuck " << endl;
+	    LDEBUG(*this << " is stuck ")
             return STUCK;
         }
         return d;

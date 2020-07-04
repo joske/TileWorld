@@ -10,7 +10,7 @@
 #include "main.hpp"
 
 void Grid::start(void) {
-    cout << "start" << endl;
+    LDEBUG("start");
 #ifdef NOGUI
     while (true) {
         update();
@@ -41,7 +41,7 @@ bool Grid::possibleMove(const Location& from, const direction m) const {
     }
     GridObject* o = objects[col][row];
     if (o != NULL) {
-        cout << "location " << newloc << " is taken by " << *o << endl;
+        LDEBUG("location " << newloc << " is taken by " << *o);
         return false;
     }
     return true;
@@ -53,11 +53,11 @@ bool Grid::allowedLocation(const Location& loc) const {
     int row = loc.getY();
 
     if (row >= ROWS || row < 0) {
-        cout << " row " << row << " out of bounds" << endl;
+        LDEBUG(" row " << row << " out of bounds");
         return false;
     }
     if (col < 0 || col >= COLS) {
-        cout << " col " << col << " out of bounds" << endl;
+        LDEBUG(" col " << col << " out of bounds");
         return false;
     }
     return true;
@@ -67,7 +67,7 @@ void Grid::createAgent(int i) {
     TRACE_IN
     Location loc = randomFreeLocation();
     Agent* agent = new Agent(this, i, loc);
-    cout << "created " << *agent << endl;
+    LDEBUG("created " << *agent);
     agents.push_back(agent);
     objects[loc.getX()][loc.getY()] = agent;
 }
@@ -76,7 +76,7 @@ void Grid::createHole() {
     TRACE_IN
     Location loc = randomFreeLocation();
     Hole* hole = new Hole(loc);
-    cout << "created " << *hole << endl;
+    LDEBUG("created " << *hole);
     holes.push_back(hole);
     objects[loc.getX()][loc.getY()] = hole;
 }
@@ -86,7 +86,7 @@ void Grid::createTile() {
     Location loc = randomFreeLocation();
     int score = RND(6)
     Tile* tile = new Tile(loc, score);
-    cout << "created " << *tile << endl;
+    LDEBUG("created " << *tile);
     tiles.push_back(tile);
     objects[loc.getX()][loc.getY()] = tile;
 }
@@ -95,7 +95,7 @@ void Grid::createObstacle() {
     TRACE_IN
     Location loc = randomFreeLocation();
     Obstacle* obst = new Obstacle(loc);
-    cout << "created " << *obst << endl;
+    LDEBUG("created " << *obst);
     objects[loc.getX()][loc.getY()] = obst;
 }
 
