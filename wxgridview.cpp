@@ -58,61 +58,55 @@ void BasicDrawPane::OnTimer(wxCommandEvent& event)
     Update();
 }
 
-/*
- * Called by the system of by wxWidgets when the panel needs
- * to be redrawn. You can also trigger this call by
- * calling Refresh()/Update().
- */
-
 void BasicDrawPane::paintEvent(wxPaintEvent & evt)
 {
     wxPaintDC dc(this);
     render(dc);
 }
 
-/*
- * Alternatively, you can use a clientDC to paint on the panel
- * at any time. Using this generally does not free you from
- * catching paint events, since it is possible that e.g. the window
- * manager throws away your drawing when the window comes to the
- * background, and expects you will redraw it when the window comes
- * back (by sending a paint event).
- *
- * In most cases, this will not be needed at all; simply handling
- * paint events and calling Refresh() when a refresh is needed
- * will do the job.
- */
 void BasicDrawPane::paintNow()
 {
     wxClientDC dc(this);
     render(dc);
 }
 
-void set_color(wxDC&  dc, int id) {
-    switch (id) {
-        case 0:
-            dc.SetPen( wxPen( wxColor(0,0,255), 2 ) );
-            break;
-        case 1:
-            dc.SetPen( wxPen( wxColor(255, 0, 0), 2 ) );
-            break;
-        case 2:
-            dc.SetPen( wxPen( wxColor(0, 255, 0), 2 ) );
-            break;
-        case 3:
-            dc.SetPen( wxPen( wxColor(128, 128, 0), 2 ) );
-            break;
-        case 4:
-            dc.SetPen( wxPen( wxColor(0, 128, 128), 2 ) );
-            break;
-        case 5:
-            dc.SetPen( wxPen( wxColor(128, 0, 128), 2 ) );
-            break;
-    }
+void set_text_color(wxDC&  dc, const wxColor& color) {
+    dc.SetTextForeground(color);
 }
 
-void draw_text(wxDC&  dc, int x, int y, const char* text) {
+const wxColor set_color(wxDC&  dc, int id) {
+    wxColor color;
+    switch (id) {
+        case 0:
+            color = wxColor(0,0,255);
+            break;
+        case 1:
+            color = wxColor(255, 0, 0);
+            break;
+        case 2:
+            color = wxColor(0, 255, 0);
+            break;
+        case 3:
+            color = wxColor(128, 128, 0);
+            break;
+        case 4:
+            color = wxColor(0, 128, 128);
+            break;
+        case 5:
+            color = wxColor(128, 0, 128);
+            break;
+    }
+    dc.SetPen( wxPen( color, 2 ) );
+    return color;
+}
+
+void draw_text(wxDC&  dc, int x, int y, const char* text, const wxColor &color) {    
+    set_text_color(dc, color);
     dc.DrawText(wxString::FromUTF8(text), x, y); 
+}
+
+void draw_text(wxDC&  dc, int x, int y, const char* text) {    
+    draw_text(dc, x, y, text, wxColor(0, 0, 0));
 }
 
 void drawTile(wxDC&  dc, GridObject* o,
@@ -127,11 +121,11 @@ void drawTile(wxDC&  dc, GridObject* o,
 void drawAgent(wxDC&  dc, GridObject* o,
         int x, int y) {
     Agent* agent = reinterpret_cast<Agent*>(o);
-    set_color(dc, agent->getId());
+    const wxColor &color = set_color(dc, agent->getId());
     dc.DrawRectangle(x, y, MAG, MAG);
     if (agent->hasTile()) {
         dc.DrawCircle( wxPoint(x + MAG/2, y + MAG/2), MAG/2);
-        draw_text(dc, x + MAG / 4, y, to_string(agent->getTile()->getScore()).c_str());
+        draw_text(dc, x + MAG / 4, y, to_string(agent->getTile()->getScore()).c_str(), color);
     }
 }
 
@@ -185,8 +179,8 @@ void BasicDrawPane::render(wxDC&  dc)
 	    ostringstream buf;
         int id = agent->getId();
         buf << "Agent(" << id << "): " << agent->getScore();
-        set_color(dc, id);
-        draw_text(dc, x, y + id * MAG, buf.str().c_str());
+        const wxColor &color = set_color(dc, id);
+        draw_text(dc, x, y + id * MAG, buf.str().c_str(), color);
     }
 }
 
