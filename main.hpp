@@ -20,6 +20,6 @@
 #define LDEBUG(x) do {} while (false);
 #endif
 
-#define RND(m) (rand() % m);
+#define RND(m) (rand() % m)
 
 #endif /* MAIN_HPP_ */

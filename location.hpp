@@ -6,26 +6,29 @@
 
 using namespace std;
 
-class Location {
-    public:
-        Location(int xx, int yy) :
-                x(xx), y(yy) {
-        }
+class Location
+{
+public:
+    Location(int xx, int yy) : x(xx), y(yy)
+    {
+    }
 
-        bool operator==(const Location& loc1) const {
-            return loc1.x == x && loc1.y == y;
-        }
-        int distance(const Location& other) const;
-        Location nextLocation(const direction m) const;
+    bool operator==(const Location &loc1) const
+    {
+        return loc1.x == x && loc1.y == y;
+    }
+    int distance(const Location &other) const;
+    Location nextLocation(const direction m) const;
 
-	int getX() const { return x; }
-	int getY() const { return y; }
+    int getX() const { return x; }
+    int getY() const { return y; }
 
-    private:
-        int x, y;
+private:
+    int x, y;
 
-    friend std::ostream& operator<<(std::ostream &strm, const Location &l) {
-            return strm << "Location(" << l.x << ", " << l.y << ")";
+    friend std::ostream &operator<<(std::ostream &strm, const Location &l)
+    {
+        return strm << "Location(" << l.x << ", " << l.y << ")";
     }
 };
 

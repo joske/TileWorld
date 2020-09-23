@@ -14,16 +14,19 @@ using namespace Gtk;
 
 IMPLEMENT_APP(MyApp)
 #else
-int main(int argc, char** argv) {
+int main(int argc, char **argv)
+{
     int agents = 6;
     int tiles = 20;
     int holes = 20;
     int obst = 20;
     int delay = 300;
 
-    if (argc != 1) {
+    if (argc != 1)
+    {
         // parameters passed
-        if (argc != 6) {
+        if (argc != 6)
+        {
             cerr << "usage: " << argv[0] << " <agents> <tiles> <holes> <obstacles> <delay>" << endl;
             return 1;
         }
