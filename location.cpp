@@ -38,22 +38,22 @@ direction Location::getDirection(Location next) const
     {
         if (y == y + 1)
         {
-            return LEFT;
+            return UP;
         }
         else
         {
-            return RIGHT;
+            return DOWN;
         }
     }
     else
     {
         if (x == next.x + 1)
         {
-            return UP;
+            return LEFT;
         }
         else
         {
-            return DOWN;
+            return RIGHT;
         }
     }
 }

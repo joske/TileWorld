@@ -36,7 +36,7 @@ Location Grid::randomFreeLocation() const
 
 bool Grid::possibleMove(const Location &from, const direction m) const
 {
-    TRACE_IN
+    // TRACE_IN
     Location newloc = from.nextLocation(m);
     int col = newloc.getX();
     int row = newloc.getY();
@@ -56,7 +56,7 @@ bool Grid::possibleMove(const Location &from, const direction m) const
 
 bool Grid::allowedLocation(const Location &loc) const
 {
-    TRACE_IN
+    // TRACE_IN
     int col = loc.getX();
     int row = loc.getY();
 

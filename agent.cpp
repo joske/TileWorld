@@ -32,6 +32,8 @@ void Agent::update()
 
 void Agent::idle()
 {
+    tile = grid->getClosestTile(loc);
+    LDEBUG(*this << " found tile " << *tile)
     state = MOVE_TO_TILE;
 }
 
@@ -39,7 +41,6 @@ void Agent::moveToTile()
 {
     TRACE_IN
     // maybe another tile is now closer?
-    tile = grid->getClosestTile(loc);
     if (tile != NULL)
     {
         LDEBUG(*this << " move to tile " << *tile)
@@ -50,7 +51,8 @@ void Agent::moveToTile()
         if (!path.empty())
         {
             direction m = path.front();
-            Location newLoc = loc.nextLocation(m);
+            path.erase(path.begin());
+            const Location newLoc = loc.nextLocation(m);
             grid->move(loc, newLoc);
             setLocation(newLoc);
             if (newLoc == tile->getLocation())
@@ -59,8 +61,18 @@ void Agent::moveToTile()
                 bool tileStilThere = grid->pickTile(tile);
                 if (tileStilThere)
                 {
+                    LDEBUG(*this << " pick tile")
                     hasTile = true;
+                    path.clear();
+                    hole = grid->getClosestHole(newLoc);
+                    LDEBUG(*this << " found hole " << *hole)
                     state = MOVE_TO_HOLE;
+                }
+                else
+                {
+                    // find a new tile
+                    tile = grid->getClosestTile(newLoc);
+                    LDEBUG(*this << " found tile " << *tile)
                 }
             }
         }
@@ -70,82 +82,44 @@ void Agent::moveToTile()
 void Agent::moveToHole()
 {
     TRACE_IN
-    hole = grid->getClosestHole(loc);
     if (hole != NULL && tile != NULL)
     {
         if (path.empty())
         {
             path = shortestPath(grid, getLocation(), hole->getLocation());
         }
-        direction m = path.front();
-        LDEBUG(*this << " next move " << m << " to hole " << *hole)
-        Location newLoc = loc.nextLocation(m);
-        grid->move(loc, newLoc);
-        setLocation(newLoc);
-        if (newLoc == hole->getLocation())
+        if (!path.empty())
         {
-            // we are there, dump the tile
-            int sc = grid->dumpTile(tile, hole);
-            if (sc != -1)
+            direction m = path.front();
+            path.erase(path.begin());
+            LDEBUG(*this << " next move " << m << " to hole " << *hole)
+            Location newLoc = loc.nextLocation(m);
+            grid->move(loc, newLoc);
+            setLocation(newLoc);
+            if (newLoc == hole->getLocation())
             {
-                delete tile;
-                delete hole;
-                tile = NULL;
-                hole = NULL;
-                hasTile = false;
-                this->score += sc;
-                state = MOVE_TO_TILE;
+                // we are there, dump the tile
+                int sc = grid->dumpTile(tile, hole);
+                if (sc != -1)
+                {
+                    LDEBUG(*this << " dump tile")
+                    delete tile;
+                    delete hole;
+                    tile = NULL;
+                    hole = NULL;
+                    hasTile = false;
+                    this->score += sc;
+                    tile = grid->getClosestTile(loc);
+                    LDEBUG(*this << " found tile " << *tile)
+                    path.clear();
+                    state = MOVE_TO_TILE;
+                }
+                else
+                {
+                    hole = grid->getClosestHole(loc);
+                    LDEBUG(*this << " found hole " << *hole)
+                }
             }
         }
     }
-}
-
-direction Agent::getNextLocalMove(const Location &from, const Location &to)
-{
-    TRACE_IN
-    LDEBUG(*this << " move from " << from << " to " << to)
-    int r = (rand() % 100) + 1;
-    if (r > 80)
-    {
-        LDEBUG(*this << " random move")
-        r = (rand() % 4);
-        direction d = static_cast<direction>(r);
-        int count = 0;
-        while (!grid->possibleMove(from, d))
-        {
-            r = (rand() % 4);
-            d = static_cast<direction>(r);
-            if (count++ == 1000)
-                break;
-        }
-        if (count >= 1000)
-        {
-            LDEBUG(*this << " is stuck ")
-            return STUCK;
-        }
-        return d;
-    }
-    int min_dist = INT_MAX;
-    direction best_move = STUCK;
-    for (int dir = 0; dir < 4; dir++)
-    {
-        direction d = static_cast<direction>(dir);
-        Location l = from.nextLocation(d);
-        if (l == to)
-        {
-            // we have arrived
-            best_move = d;
-            break;
-        }
-        else if (grid->possibleMove(from, d))
-        {
-            int dist = l.distance(to);
-            if (dist < min_dist)
-            {
-                min_dist = dist;
-                best_move = d;
-            }
-        }
-    }
-    return best_move;
 }

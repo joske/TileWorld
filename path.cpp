@@ -2,7 +2,7 @@
 
 bool hasLoop(std::vector<Location> path, Location nextLocation)
 {
-    for (auto l : path)
+    for (Location l : path)
     {
         if (l == nextLocation)
         {
@@ -15,31 +15,32 @@ bool hasLoop(std::vector<Location> path, Location nextLocation)
 std::vector<direction> makePath(std::vector<Location> list)
 {
     std::vector<direction> path;
-    auto last = list.at(0);
+    Location last = list.at(0);
     list.erase(list.begin());
-    for (auto location : list)
+    cout << "Path from: "<< last;
+    for (Location location : list)
     {
-        auto dir = last.getDirection(location);
+        direction dir = last.getDirection(location);
+        cout << " next " << location;
         path.push_back(dir);
         last = location;
     }
+    cout << endl;
     return path;
 }
 
-void generateNext(Grid *grid, Location to, std::vector<Location> path, std::map<int, std::vector<Location>> &q, direction dir)
+void generateNext(Grid *grid, Location to, std::vector<Location> &path, std::map<int, std::vector<Location>> &q, direction dir)
 {
     const Location last = path.back();
-    auto nextLocation = last.nextLocation(dir);
+    Location nextLocation = last.nextLocation(dir);
     if (grid->possibleMove(last, dir) || nextLocation == to)
     {
-        cout << "valid direction " << dir << endl;
         std::vector newPath = std::vector(path);
         if (!hasLoop(newPath, nextLocation))
         {
             newPath.push_back(nextLocation);
             int cost = newPath.size() + nextLocation.distance(to);
             q.insert({cost, newPath});
-            cout << "direction " << dir << endl;
         }
     }
 }
@@ -52,9 +53,9 @@ std::vector<direction> shortestPath(Grid *grid, Location from, Location to)
     q.insert({0, initial});
     while (!q.empty())
     {
-        auto path = q.begin()->second;
+        vector<Location> path = q.begin()->second;
         q.erase(q.begin()->first);
-        auto last = path[path.size() - 1];
+        Location last = path[path.size() - 1];
         if (last == to)
         {
             return makePath(path);

@@ -28,6 +28,7 @@ public:
         state = IDLE;
         tile = NULL;
         grid = g;
+        hasTile = false;
     }
 
     int getId() const;

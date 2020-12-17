@@ -1,7 +1,7 @@
 APP=TileWorld
 COMPILER=clang++
 #COMPILER=g++
-CFLAGS=-O0 -Werror -std=c++17 -g #-DDEBUGGING=1
+CFLAGS=-O0 -Werror -std=c++17 -g -DDEBUGGING=1
 LDFLAGS=-std=c++17 -g
 
 ifeq ($(GUI), gtk)

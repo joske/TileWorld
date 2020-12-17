@@ -92,6 +92,10 @@ public:
     Hole(Location &loc) : GridObject(loc, HOLE)
     {
     }
+    virtual std::ostream &print(std::ostream &strm) const
+    {
+        return strm << "Hole(x=" << getX() << ", y=" << getY() << ")" << endl;
+    }
 };
 
 class Obstacle : public GridObject
@@ -99,6 +103,10 @@ class Obstacle : public GridObject
 public:
     Obstacle(Location &loc) : GridObject(loc, OBSTACLE)
     {
+    }
+    virtual std::ostream &print(std::ostream &strm) const
+    {
+        return strm << "Obstacle(x=" << getX() << ", y=" << getY() << ")" << endl;
     }
 };
 
