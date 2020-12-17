@@ -123,7 +123,7 @@ void drawAgent(wxDC&  dc, GridObject* o,
     Agent* agent = reinterpret_cast<Agent*>(o);
     const wxColor &color = set_color(dc, agent->getId());
     dc.DrawRectangle(x, y, MAG, MAG);
-    if (agent->hasTile()) {
+    if (agent->hasTile) {
         dc.DrawCircle( wxPoint(x + MAG/2, y + MAG/2), MAG/2);
         draw_text(dc, x + MAG / 4, y, to_string(agent->getTile()->getScore()).c_str(), color);
     }

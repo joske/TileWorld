@@ -5,6 +5,7 @@
 #include "location.hpp"
 #include "gridobjects.hpp"
 #include "searchstrategy.hpp"
+#include <vector>
 
 using namespace std;
 
@@ -19,6 +20,7 @@ class Grid;
 class Agent : public GridObject
 {
 public:
+    bool hasTile;
     Agent(Grid *g, int pid, Location &loc) : GridObject(loc, AGENT)
     {
         score = 0;
@@ -34,15 +36,11 @@ public:
     {
         return tile;
     }
-    bool hasTile() const
-    {
-        return tile != NULL;
-    }
     int getScore() const;
 
     virtual std::ostream &print(std::ostream &strm) const
     {
-        return strm << "Agent(id=" << id << ", x=" << getX() << ", y=" << getY() << ", hasTile=" << hasTile() << ", score=" << score << ", state=" << state << ")" << endl;
+        return strm << "Agent(id=" << id << ", x=" << getX() << ", y=" << getY() << ", hasTile=" << hasTile << ", score=" << score << ", state=" << state << ")" << endl;
     }
 
 private:
@@ -51,6 +49,8 @@ private:
     int score;
     State state;
     Tile *tile;
+    Hole *hole;
+    std::vector<direction> path;
 
     void idle();
     void moveToTile();

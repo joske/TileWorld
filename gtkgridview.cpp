@@ -97,8 +97,7 @@ void GridView::drawAgent(const Cairo::RefPtr<Cairo::Context> &cr, GridObject *o,
     Agent *agent = reinterpret_cast<Agent *>(o);
     set_color(cr, agent->getId());
     cr->rectangle(x, y, MAG, MAG);
-    if (agent->hasTile())
-    {
+    if (agent->hasTile) {
         cr->begin_new_sub_path();
         cr->arc(x + MAG / 2, y + MAG / 2, MAG / 2, 0, 2 * M_PI);
         cr->begin_new_sub_path();

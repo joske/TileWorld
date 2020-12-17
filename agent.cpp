@@ -2,6 +2,7 @@
 #include "grid.hpp"
 #include <limits.h>
 #include "main.hpp"
+#include "path.hpp"
 
 int Agent::getId() const
 {
@@ -38,22 +39,29 @@ void Agent::moveToTile()
 {
     TRACE_IN
     // maybe another tile is now closer?
-    Tile *otherTile = grid->getClosestTile(loc);
-    if (otherTile != NULL)
+    tile = grid->getClosestTile(loc);
+    if (tile != NULL)
     {
-        LDEBUG(*this << " move to tile " << *otherTile)
-        direction m = getNextLocalMove(this->getLocation(), otherTile->getLocation());
-        Location newLoc = loc.nextLocation(m);
-        grid->move(loc, newLoc);
-        setLocation(newLoc);
-        if (newLoc == otherTile->getLocation())
+        LDEBUG(*this << " move to tile " << *tile)
+        if (path.empty())
         {
-            // we are there, pick the tile
-            bool tileStilThere = grid->pickTile(otherTile);
-            if (tileStilThere)
+            path = shortestPath(grid, getLocation(), tile->getLocation());
+        }
+        if (!path.empty())
+        {
+            direction m = path.front();
+            Location newLoc = loc.nextLocation(m);
+            grid->move(loc, newLoc);
+            setLocation(newLoc);
+            if (newLoc == tile->getLocation())
             {
-                tile = otherTile;
-                state = MOVE_TO_HOLE;
+                // we are there, pick the tile
+                bool tileStilThere = grid->pickTile(tile);
+                if (tileStilThere)
+                {
+                    hasTile = true;
+                    state = MOVE_TO_HOLE;
+                }
             }
         }
     }
@@ -62,10 +70,14 @@ void Agent::moveToTile()
 void Agent::moveToHole()
 {
     TRACE_IN
-    Hole *hole = grid->getClosestHole(loc);
+    hole = grid->getClosestHole(loc);
     if (hole != NULL && tile != NULL)
     {
-        direction m = getNextLocalMove(this->getLocation(), hole->getLocation());
+        if (path.empty())
+        {
+            path = shortestPath(grid, getLocation(), hole->getLocation());
+        }
+        direction m = path.front();
         LDEBUG(*this << " next move " << m << " to hole " << *hole)
         Location newLoc = loc.nextLocation(m);
         grid->move(loc, newLoc);
@@ -79,6 +91,8 @@ void Agent::moveToHole()
                 delete tile;
                 delete hole;
                 tile = NULL;
+                hole = NULL;
+                hasTile = false;
                 this->score += sc;
                 state = MOVE_TO_TILE;
             }
