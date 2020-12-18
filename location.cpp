@@ -36,7 +36,7 @@ direction Location::getDirection(Location next) const
 {
     if (x == next.x)
     {
-        if (y == y + 1)
+        if (y == next.y + 1)
         {
             return UP;
         }

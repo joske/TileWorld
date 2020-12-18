@@ -27,6 +27,7 @@ public:
         id = pid;
         state = IDLE;
         tile = NULL;
+        hole = NULL;
         grid = g;
         hasTile = false;
     }

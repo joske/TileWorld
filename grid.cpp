@@ -34,6 +34,16 @@ Location Grid::randomFreeLocation() const
     return Location(c, r);
 }
 
+bool Grid::isFree(const Location &location) const 
+{
+    GridObject *o = objects[location.getX()][location.getY()];
+    if (o != NULL)
+    {
+        return false;
+    }
+    return true;
+}
+
 bool Grid::possibleMove(const Location &from, const direction m) const
 {
     // TRACE_IN
@@ -45,13 +55,7 @@ bool Grid::possibleMove(const Location &from, const direction m) const
     {
         return false;
     }
-    GridObject *o = objects[col][row];
-    if (o != NULL)
-    {
-        LDEBUG("location " << newloc << " is taken by " << *o);
-        return false;
-    }
-    return true;
+    return isFree(newloc);
 }
 
 bool Grid::allowedLocation(const Location &loc) const
@@ -62,12 +66,10 @@ bool Grid::allowedLocation(const Location &loc) const
 
     if (row >= ROWS || row < 0)
     {
-        LDEBUG(" row " << row << " out of bounds");
         return false;
     }
     if (col < 0 || col >= COLS)
     {
-        LDEBUG(" col " << col << " out of bounds");
         return false;
     }
     return true;

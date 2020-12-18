@@ -18,13 +18,14 @@ endif
 
 SRC=$(shell find . -name '*.cpp')
 OBJS=$(subst .cpp,.o,$(SRC))
+HDRS=$(shell find . -name '*.hpp')
 
 all: $(APP)
 	
 $(APP): $(OBJS)
 	$(COMPILER) $(LDFLAGS) -o TileWorld $(OBJS)
 
-.cpp.o: %.c
+.cpp.o: %.c $(HDRS)
 	$(COMPILER) $(CFLAGS) -c $<
 
 clean: 

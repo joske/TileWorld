@@ -51,6 +51,7 @@ public:
     Hole *getClosestHole(const Location &start) const;
     Tile *getClosestTile(const Location &start) const;
     bool possibleMove(const Location &from, const direction m) const;
+    bool isFree(const Location &loc) const;
     bool allowedLocation(const Location &loc) const;
     void move(const Location &from, const Location &to);
     bool pickTile(Tile *tile);

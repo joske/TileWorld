@@ -76,6 +76,10 @@ void Agent::moveToTile()
                 }
             }
         }
+        else
+        {
+            LDEBUG(*this << " no path found to " << *hole)
+        }
     }
 }
 
@@ -120,6 +124,10 @@ void Agent::moveToHole()
                     LDEBUG(*this << " found hole " << *hole)
                 }
             }
+        }
+        else
+        {
+            LDEBUG(*this << " no path found to " << *hole)
         }
     }
 }

@@ -35,7 +35,7 @@ void generateNext(Grid *grid, Location to, std::vector<Location> &path, std::map
     Location nextLocation = last.nextLocation(dir);
     if (grid->possibleMove(last, dir) || nextLocation == to)
     {
-        std::vector newPath = std::vector(path);
+        std::vector<Location> newPath = std::vector<Location>(path);
         if (!hasLoop(newPath, nextLocation))
         {
             newPath.push_back(nextLocation);
