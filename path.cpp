@@ -29,7 +29,7 @@ std::vector<direction> makePath(std::vector<Location> list)
     return path;
 }
 
-void generateNext(Grid grid, Location to, std::vector<Location> &path, std::map<int, std::vector<Location>> &q, direction dir)
+void generateNext(Grid& grid, Location to, std::vector<Location> &path, std::map<int, std::vector<Location>> &q, direction dir)
 {
     const Location last = path.back();
     Location nextLocation = last.nextLocation(dir);
@@ -45,7 +45,7 @@ void generateNext(Grid grid, Location to, std::vector<Location> &path, std::map<
     }
 }
 
-std::vector<direction> shortestPath(Grid grid, Location from, Location to)
+std::vector<direction> shortestPath(Grid& grid, Location from, Location to)
 {
     std::vector<Location> initial;
     std::map<int, std::vector<Location>> q;
