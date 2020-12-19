@@ -9,6 +9,37 @@
 #endif
 #include "main.hpp"
 
+Grid::Grid(int pnumAgents, int pnumTiles, int pnumHoles, int pnumObst)
+{
+    numAgents = pnumAgents;
+    numTiles = pnumTiles;
+    numHoles = pnumHoles;
+
+    for (int i = 0; i < COLS; i++)
+    {
+        for (int j = 0; j < ROWS; j++)
+        {
+            objects[i][j] = empty;
+        }
+    }
+    for (int i = 0; i < numAgents; i++)
+    {
+        createAgent(i);
+    }
+    for (int i = 0; i < numTiles; i++)
+    {
+        createTile();
+    }
+    for (int i = 0; i < numHoles; i++)
+    {
+        createHole();
+    }
+    for (int i = 0; i < pnumObst; i++)
+    {
+        createObstacle();
+    }
+}
+
 void Grid::start(void)
 {
     LDEBUG("start");
@@ -26,7 +57,7 @@ Location Grid::randomFreeLocation() const
     TRACE_IN
     int c = RND(COLS);
     int r = RND(ROWS);
-    while (objects[c][r] != NULL)
+    while (objects[c][r].getType() != EMPTY)
     {
         c = RND(COLS);
         r = RND(ROWS);
@@ -36,8 +67,8 @@ Location Grid::randomFreeLocation() const
 
 bool Grid::isFree(const Location &location) const 
 {
-    GridObject *o = objects[location.getX()][location.getY()];
-    if (o != NULL)
+    GridObject o = objects[location.getX()][location.getY()];
+    if (o.getType() == EMPTY)
     {
         return false;
     }
@@ -79,8 +110,8 @@ void Grid::createAgent(int i)
 {
     TRACE_IN
     Location loc = randomFreeLocation();
-    Agent *agent = new Agent(this, i, loc);
-    LDEBUG("created " << *agent);
+    Agent agent = Agent(*this, i, loc);
+    LDEBUG("created " << agent);
     agents.push_back(agent);
     objects[loc.getX()][loc.getY()] = agent;
 }
@@ -89,8 +120,8 @@ void Grid::createHole()
 {
     TRACE_IN
     Location loc = randomFreeLocation();
-    Hole *hole = new Hole(loc);
-    LDEBUG("created " << *hole);
+    Hole hole = Hole(loc);
+    LDEBUG("created " << hole);
     holes.push_back(hole);
     objects[loc.getX()][loc.getY()] = hole;
 }
@@ -100,8 +131,8 @@ void Grid::createTile()
     TRACE_IN
     Location loc = randomFreeLocation();
     int score = RND(6);
-    Tile *tile = new Tile(loc, score);
-    LDEBUG("created " << *tile);
+    Tile tile = Tile(loc, score);
+    LDEBUG("created " << tile);
     tiles.push_back(tile);
     objects[loc.getX()][loc.getY()] = tile;
 }
@@ -110,19 +141,19 @@ void Grid::createObstacle()
 {
     TRACE_IN
     Location loc = randomFreeLocation();
-    Obstacle *obst = new Obstacle(loc);
-    LDEBUG("created " << *obst);
+    Obstacle obst = Obstacle(loc);
+    LDEBUG("created " << obst);
     objects[loc.getX()][loc.getY()] = obst;
 }
 
-Hole *Grid::getClosestHole(const Location &start) const
+Hole Grid::getClosestHole(const Location &start) const
 {
     TRACE_IN
     int minDist = INT_MAX;
-    Hole *best = NULL;
-    for (Hole *hole : holes)
+    Hole best;
+    for (Hole hole : holes)
     {
-        int dist = hole->getLocation().distance(start);
+        int dist = hole.getLocation().distance(start);
         if (dist < minDist)
         {
             minDist = dist;
@@ -132,14 +163,14 @@ Hole *Grid::getClosestHole(const Location &start) const
     return best;
 }
 
-Tile *Grid::getClosestTile(const Location &start) const
+Tile Grid::getClosestTile(const Location &start) const
 {
     TRACE_IN
     int minDist = INT_MAX;
-    Tile *best = NULL;
-    for (Tile *tile : tiles)
+    Tile best;
+    for (Tile tile : tiles)
     {
-        int dist = tile->getLocation().distance(start);
+        int dist = tile.getLocation().distance(start);
         if (dist < minDist)
         {
             minDist = dist;
@@ -151,15 +182,15 @@ Tile *Grid::getClosestTile(const Location &start) const
 
 void Grid::move(const Location &from, const Location &to)
 {
-    GridObject *o = objects[from.getX()][from.getY()];
-    objects[from.getX()][from.getY()] = NULL;
+    GridObject o = objects[from.getX()][from.getY()];
+    objects[from.getX()][from.getY()] = empty;
     objects[to.getX()][to.getY()] = o;
 }
 
-bool Grid::pickTile(Tile *tile)
+bool Grid::pickTile(const Tile tile)
 {
     TRACE_IN
-    vector<Tile *>::iterator it = std::find(tiles.begin(), tiles.end(), tile);
+    vector<Tile>::iterator it = std::find(tiles.begin(), tiles.end(), tile);
     if (it != tiles.end())
     {
         tiles.erase(it);
@@ -168,15 +199,15 @@ bool Grid::pickTile(Tile *tile)
     return it != tiles.end();
 }
 
-int Grid::dumpTile(Tile *tile, Hole *hole)
+int Grid::dumpTile(const Tile tile, const Hole hole)
 {
     TRACE_IN
-    vector<Hole *>::iterator it = std::find(holes.begin(), holes.end(), hole);
+    vector<Hole>::iterator it = std::find(holes.begin(), holes.end(), hole);
     if (it != holes.end())
     {
         holes.erase(it);
         createHole(); // and a new hole
-        return tile->getScore();
+        return tile.getScore();
     }
     return -1;
 }
@@ -184,24 +215,24 @@ int Grid::dumpTile(Tile *tile, Hole *hole)
 void Grid::update()
 {
     TRACE_IN
-    for (Agent *agent : agents)
+    for (Agent agent : agents)
     {
-        agent->update();
+        agent.update();
     }
     printGrid();
 }
 
-GridObject *Grid::getObject(int col, int row) const
+GridObject Grid::getObject(int col, int row) const
 {
     if (row >= ROWS || row < 0)
     {
         cerr << " row " << row << " out of bounds" << endl;
-        return NULL;
+        return empty;
     }
     if (col < 0 || col >= COLS)
     {
         cerr << " col " << col << " out of bounds" << endl;
-        return NULL;
+        return empty;
     }
     return objects[col][row];
 }
@@ -245,7 +276,7 @@ void Grid::printGrid() const
 #endif
 }
 
-const vector<Agent *> &Grid::getAgents() const
+const vector<Agent> Grid::getAgents() const
 {
     TRACE_IN
     return agents;

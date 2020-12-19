@@ -3,11 +3,13 @@
 
 #include <iostream>
 #include "searchstrategy.hpp"
+#include "limits.h"
 
 using namespace std;
 
 class Location {
     public:
+        Location() : x(INT_MAX), y(INT_MAX){}
         Location(int xx, int yy) : x(xx), y(yy)
         {
         }

@@ -45,10 +45,10 @@ bool GridView::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
             int x = c * MAG;
             int y = r * MAG;
             cr->set_source_rgb(0, 0, 0);
-            GridObject *o = grid.getObject(c, r);
-            if (o != NULL)
+            GridObject o = grid.getObject(c, r);
+            if (o.getType() != EMPTY)
             {
-                switch (o->getType())
+                switch (o.getType())
                 {
                 case AGENT:
                     drawAgent(cr, o, x, y);
@@ -64,44 +64,44 @@ bool GridView::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
                     cr->rectangle(x, y, MAG, MAG);
                     cr->fill();
                     break;
+                case EMPTY:
+                    break;
                 }
             }
             cr->stroke();
         }
     }
-    const vector<Agent *> &agents = grid.getAgents();
+    const vector<Agent> &agents = grid.getAgents();
     const int x = COLS * MAG + 20;
     const int y = 20;
-    for_each(agents.begin(), agents.end(), [&](Agent *agent) {
+    for (Agent agent : grid.getAgents()) {
         ostringstream buf;
-        int id = agent->getId();
+        int id = agent.getId();
         set_color(cr, id);
-        buf << "Agent(" << id << "): " << agent->getScore();
+        buf << "Agent(" << id << "): " << agent.getScore();
         draw_text(cr, x, y + id * MAG, buf.str().c_str());
-    });
+    }
     return true;
 }
 
-void GridView::drawTile(const Cairo::RefPtr<Cairo::Context> &cr, GridObject *o,
-                        int x, int y)
+void GridView::drawTile(const Cairo::RefPtr<Cairo::Context> &cr, GridObject o, int x, int y)
 {
-    Tile *tile = reinterpret_cast<Tile *>(o);
+    Tile tile = static_cast<Tile&>(o);
     cr->arc(x + MAG / 2, y + MAG / 2, MAG / 2, 0, 2 * M_PI);
     cr->begin_new_sub_path();
-    draw_text(cr, x + MAG / 4, y, to_string(tile->getScore()).c_str());
+    draw_text(cr, x + MAG / 4, y, to_string(tile.getScore()).c_str());
 }
 
-void GridView::drawAgent(const Cairo::RefPtr<Cairo::Context> &cr, GridObject *o,
-                         int x, int y)
+void GridView::drawAgent(const Cairo::RefPtr<Cairo::Context> &cr, GridObject o, int x, int y)
 {
-    Agent *agent = reinterpret_cast<Agent *>(o);
-    set_color(cr, agent->getId());
+    Agent agent = static_cast<Agent&>(o);
+    set_color(cr, agent.getId());
     cr->rectangle(x, y, MAG, MAG);
-    if (agent->hasTile) {
+    if (agent.hasTile) {
         cr->begin_new_sub_path();
         cr->arc(x + MAG / 2, y + MAG / 2, MAG / 2, 0, 2 * M_PI);
         cr->begin_new_sub_path();
-        draw_text(cr, x + MAG / 4, y, to_string(agent->getTile()->getScore()).c_str());
+        draw_text(cr, x + MAG / 4, y, to_string(agent.getTile().getScore()).c_str());
     }
 }
 

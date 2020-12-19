@@ -14,58 +14,30 @@ using namespace std;
 class Grid
 {
 public:
-    Grid(int pnumAgents, int pnumTiles, int pnumHoles, int pnumObst)
-    {
-        numAgents = pnumAgents;
-        numTiles = pnumTiles;
-        numHoles = pnumHoles;
-
-        for (int i = 0; i < COLS; i++)
-        {
-            for (int j = 0; j < ROWS; j++)
-            {
-                objects[i][j] = NULL;
-            }
-        }
-        for (int i = 0; i < numAgents; i++)
-        {
-            createAgent(i);
-        }
-        for (int i = 0; i < numTiles; i++)
-        {
-            createTile();
-        }
-        for (int i = 0; i < numHoles; i++)
-        {
-            createHole();
-        }
-        for (int i = 0; i < pnumObst; i++)
-        {
-            createObstacle();
-        }
-    }
-    const vector<Agent *> &getAgents() const;
+    Grid(int pnumAgents, int pnumTiles, int pnumHoles, int pnumObst);
+    const vector<Agent> getAgents() const;
     void start();
     void update();
-    GridObject *getObject(int x, int y) const;
-    Hole *getClosestHole(const Location &start) const;
-    Tile *getClosestTile(const Location &start) const;
+    GridObject getObject(int x, int y) const;
+    Hole getClosestHole(const Location &start) const;
+    Tile getClosestTile(const Location &start) const;
     bool possibleMove(const Location &from, const direction m) const;
     bool isFree(const Location &loc) const;
     bool allowedLocation(const Location &loc) const;
     void move(const Location &from, const Location &to);
-    bool pickTile(Tile *tile);
-    int dumpTile(Tile *tile, Hole *hole);
+    bool pickTile(const Tile tile);
+    int dumpTile(const Tile tile, const Hole hole);
 
 private:
     int numAgents;
     int numHoles;
     int numTiles;
-    vector<Agent *> agents;
-    vector<Hole *> holes;
-    vector<Tile *> tiles;
+    vector<Agent> agents;
+    vector<Hole> holes;
+    vector<Tile> tiles;    
+    Empty empty = Empty();
 
-    GridObject *objects[COLS][ROWS];
+    GridObject objects[COLS][ROWS];
 
     void createAgent(int id);
     void createTile();

@@ -16,16 +16,22 @@ enum object_type
     AGENT = 0,
     HOLE = 1,
     TILE = 2,
-    OBSTACLE = 3
+    OBSTACLE = 3,
+    EMPTY=4
 };
 
 class GridObject
 {
 public:
+    GridObject() : loc(), type(EMPTY) {}
     GridObject(const Location &loc, object_type t) : loc(loc), type(t)
     {
     }
     virtual ~GridObject() {}
+
+    bool operator==(const GridObject& other) const {
+        return loc == other.loc && type == other.type;
+    }
 
     object_type getType() const
     {
@@ -68,6 +74,7 @@ protected:
 class Tile : public GridObject
 {
 public:
+    Tile() : GridObject(Location(), EMPTY) {}
     Tile(Location &loc, int s) : GridObject(loc, TILE)
     {
         score = s;
@@ -89,6 +96,7 @@ private:
 class Hole : public GridObject
 {
 public:
+    Hole() : GridObject(Location(), EMPTY) {}
     Hole(Location &loc) : GridObject(loc, HOLE)
     {
     }
@@ -107,6 +115,16 @@ public:
     virtual std::ostream &print(std::ostream &strm) const
     {
         return strm << "Obstacle(x=" << getX() << ", y=" << getY() << ")" << endl;
+    }
+};
+
+class Empty : public GridObject
+{
+public:
+    Empty() {}
+    virtual std::ostream &print(std::ostream &strm) const
+    {
+        return strm << "Empty" << endl;
     }
 };
 
