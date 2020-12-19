@@ -115,26 +115,26 @@ void draw_text(wxDC &dc, int x, int y, const char *text)
     draw_text(dc, x, y, text, wxColor(0, 0, 0));
 }
 
-void drawTile(wxDC &dc, GridObject *o,
+void drawTile(wxDC &dc, GridObject o,
               int x, int y)
 {
-    Tile *tile = reinterpret_cast<Tile *>(o);
+    Tile tile = static_cast<Tile &>(o);
     dc.SetPen(wxPen(wxColor(0, 0, 0), 2));
     dc.DrawCircle(wxPoint(x + MAG / 2, y + MAG / 2), MAG / 2);
-    draw_text(dc, x + MAG / 4, y, to_string(tile->getScore()).c_str());
+    draw_text(dc, x + MAG / 4, y, to_string(tile.getScore()).c_str());
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
 }
 
-void drawAgent(wxDC &dc, GridObject *o,
+void drawAgent(wxDC &dc, GridObject o,
                int x, int y)
 {
-    Agent *agent = reinterpret_cast<Agent *>(o);
-    const wxColor &color = set_color(dc, agent->getId());
+    Agent agent = static_cast<Agent &>(o);
+    const wxColor &color = set_color(dc, agent.getId());
     dc.DrawRectangle(x, y, MAG, MAG);
-    if (agent->hasTile)
+    if (agent.hasTile)
     {
         dc.DrawCircle(wxPoint(x + MAG / 2, y + MAG / 2), MAG / 2);
-        draw_text(dc, x + MAG / 4, y, to_string(agent->getTile()->getScore()).c_str(), color);
+        draw_text(dc, x + MAG / 4, y, to_string(agent.getTile().getScore()).c_str(), color);
     }
 }
 
@@ -167,10 +167,10 @@ void BasicDrawPane::render(wxDC &dc)
         {
             int x = c * MAG;
             int y = r * MAG;
-            GridObject *o = grid.getObject(c, r);
-            if (o != NULL)
+            GridObject o = grid.getObject(c, r);
+            if (o.getType() != EMPTY)
             {
-                switch (o->getType())
+                switch (o.getType())
                 {
                 case AGENT:
                     drawAgent(dc, o, x, y);
@@ -184,17 +184,19 @@ void BasicDrawPane::render(wxDC &dc)
                 case OBSTACLE:
                     drawObstacle(dc, x, y);
                     break;
+                default:
+                    break;
                 }
             }
         }
     }
     const int x = COLS * MAG + 20;
     const int y = 20;
-    for (Agent *agent : grid.getAgents())
+    for (Agent agent : grid.getAgents())
     {
         ostringstream buf;
-        int id = agent->getId();
-        buf << "Agent(" << id << "): " << agent->getScore();
+        int id = agent.getId();
+        buf << "Agent(" << id << "): " << agent.getScore();
         const wxColor &color = set_color(dc, id);
         draw_text(dc, x, y + id * MAG, buf.str().c_str(), color);
     }
