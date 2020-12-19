@@ -4,4 +4,4 @@
 #include "location.hpp"
 #include "grid.hpp"
 
-std::vector<direction> shortestPath(Grid grid, Location from, Location to);
+std::vector<direction> shortestPath(Grid& grid, Location from, Location to);
