@@ -78,7 +78,14 @@ void Agent::moveToTile()
         }
         else
         {
-            LDEBUG(*this << " no path found to " << *hole)
+            if (hole != NULL)
+            {
+                LDEBUG(*this << " no path found to " << *hole)
+            }
+            else
+            {
+                LDEBUG(*this << " no path found to FOOBAR")
+            }
         }
     }
 }
@@ -88,6 +95,7 @@ void Agent::moveToHole()
     TRACE_IN
     if (hole != NULL && tile != NULL)
     {
+        LDEBUG(*this << " move to hole " << *hole)
         if (path.empty())
         {
             path = shortestPath(grid, getLocation(), hole->getLocation());
