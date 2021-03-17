@@ -15,6 +15,9 @@ class Location {
         bool operator==(const Location& loc1) const {
             return loc1.x == x && loc1.y == y;
         }
+        bool operator!=(const Location& loc1) const {
+            return loc1.x != x || loc1.y != y;
+        }
         int distance(const Location& other) const;
         Location nextLocation(const direction m) const;
         direction getDirection(Location next) const;
