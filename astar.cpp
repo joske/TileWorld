@@ -1,5 +1,5 @@
 #include "astar.hpp"
-#include <queue>
+#include "priorityq.hpp"
 #include <vector>
 #include <set>
 
@@ -22,20 +22,17 @@ void checkNeighbor(Grid *grid, T& openList, std::set<Node> closedList, direction
         int g = from.distance(nextLoc);
         Node child = Node(nextLoc, &current, g + h);
         if (!closedList.contains(child)) {
-            for (Node n : openList) {
-                if (n.location == child.location) {
-                    return;
-                }
-            }
-            // child is not in openList
-            openList.push(child);
+            if (!openList.contains(child)) {
+                // child is not in openList
+                openList.push(child);
+            }        
         }
     }
 }
 
 std::vector<direction> astar(Grid *grid, Location from, Location to) {
     auto cmp = [](Node left, Node right) { return left.fscore < right.fscore;};
-    std::priority_queue<Node, std::vector<Node>, decltype(cmp)> openList(cmp);
+    MyPriorityQueue<Node> openList;
     std::set<Node> closedList;
     Node fromNode = Node(from, NULL, 0);
     openList.push(fromNode);
