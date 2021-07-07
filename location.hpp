@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "searchstrategy.hpp"
+#include "main.hpp"
 
 using namespace std;
 
@@ -13,7 +14,8 @@ class Location {
         }
 
         bool operator==(const Location& loc1) const {
-            return loc1.x == x && loc1.y == y;
+            bool equal = loc1.x == x && loc1.y == y;
+            return equal;
         }
         bool operator!=(const Location& loc1) const {
             return loc1.x != x || loc1.y != y;

@@ -5,3 +5,4 @@ TileWorld
 .project
 .settings
 .vscode
+.DS_STORE

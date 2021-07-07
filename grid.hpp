@@ -3,11 +3,12 @@
 
 #include <vector>
 #include <array>
+#include <memory>
 #include "agent.hpp"
 #include "gridobjects.hpp"
 
-#define COLS 40
-#define ROWS 40
+#define COLS 20
+#define ROWS 20
 
 using namespace std;
 
@@ -44,28 +45,28 @@ public:
             createObstacle();
         }
     }
-    const vector<Agent *> &getAgents() const;
+    const vector<shared_ptr<Agent>> getAgents() const;
     void start();
     void update();
-    GridObject *getObject(int x, int y) const;
-    Hole *getClosestHole(const Location &start) const;
-    Tile *getClosestTile(const Location &start) const;
+    shared_ptr<GridObject> getObject(int x, int y) const;
+    shared_ptr<Hole>  getClosestHole(const Location &start) const;
+    shared_ptr<Tile>  getClosestTile(const Location &start) const;
     bool possibleMove(const Location &from, const direction m) const;
     bool isFree(const Location &loc) const;
     bool allowedLocation(const Location &loc) const;
     void move(const Location &from, const Location &to);
-    bool pickTile(Tile *tile);
-    int dumpTile(Tile *tile, Hole *hole);
+    bool pickTile(shared_ptr<Tile> tile);
+    int dumpTile(shared_ptr<Tile> tile, shared_ptr<Hole> hole);
 
 private:
     int numAgents;
     int numHoles;
     int numTiles;
-    vector<Agent *> agents;
-    vector<Hole *> holes;
-    vector<Tile *> tiles;
+    vector<shared_ptr<Agent>> agents;
+    vector<shared_ptr<Hole>> holes;
+    vector<shared_ptr<Tile>> tiles;
 
-    GridObject *objects[COLS][ROWS];
+    shared_ptr<GridObject> objects[COLS][ROWS];
 
     void createAgent(int id);
     void createTile();
@@ -77,7 +78,7 @@ private:
     friend std::ostream &operator<<(std::ostream &strm, const Grid &a)
     {
         return strm << "Grid(agents=" << a.agents.size() << ", tiles="
-                    << a.tiles.size() << ", holes=" << a.holes.size() << endl;
+                    << a.tiles.size() << ", holes=" << a.holes.size() << ")" << endl;
     }
 };
 

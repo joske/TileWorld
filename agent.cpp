@@ -2,7 +2,7 @@
 #include "grid.hpp"
 #include <limits.h>
 #include "main.hpp"
-#include "path.hpp"
+#include "astar.hpp"
 
 int Agent::getId() const
 {
@@ -46,13 +46,12 @@ void Agent::moveToTile()
         LDEBUG(*this << " move to tile " << *tile)
         if (path.empty())
         {
-            path = shortestPath(grid, getLocation(), tile->getLocation());
+            path = astar(grid, getLocation(), tile->getLocation());
         }
         if (!path.empty())
         {
-            direction m = path.front();
+            const Location newLoc = path.front();
             path.erase(path.begin());
-            const Location newLoc = loc.nextLocation(m);
             grid->move(loc, newLoc);
             setLocation(newLoc);
             if (newLoc == tile->getLocation())
@@ -80,7 +79,7 @@ void Agent::moveToTile()
         {
             if (hole != NULL)
             {
-                LDEBUG(*this << " no path found to " << *hole)
+                LDEBUG(*this << " no path found to " << *tile)
             }
             else
             {
@@ -98,14 +97,13 @@ void Agent::moveToHole()
         LDEBUG(*this << " move to hole " << *hole)
         if (path.empty())
         {
-            path = shortestPath(grid, getLocation(), hole->getLocation());
+            path = astar(grid, getLocation(), hole->getLocation());
         }
         if (!path.empty())
         {
-            direction m = path.front();
+            const Location newLoc = path.front();
             path.erase(path.begin());
-            LDEBUG(*this << " next move " << m << " to hole " << *hole)
-            Location newLoc = loc.nextLocation(m);
+            LDEBUG(*this << " next location " << newLoc << " to hole " << *hole)
             grid->move(loc, newLoc);
             setLocation(newLoc);
             if (newLoc == hole->getLocation())
@@ -115,8 +113,6 @@ void Agent::moveToHole()
                 if (sc != -1)
                 {
                     LDEBUG(*this << " dump tile")
-                    delete tile;
-                    delete hole;
                     tile = NULL;
                     hole = NULL;
                     hasTile = false;

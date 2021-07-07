@@ -16,7 +16,7 @@ IMPLEMENT_APP(MyApp)
 #else
 int main(int argc, char **argv)
 {
-    int agents = 1;
+    int agents = 5;
     int tiles = 20;
     int holes = 20;
     int obst = 20;

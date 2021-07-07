@@ -34,7 +34,7 @@ public:
 
     int getId() const;
     void update();
-    Tile *getTile() const
+    shared_ptr<Tile>  getTile() const
     {
         return tile;
     }
@@ -50,9 +50,9 @@ private:
     int id;
     int score;
     State state;
-    Tile *tile;
-    Hole *hole;
-    std::vector<direction> path;
+    shared_ptr<Tile> tile;
+    shared_ptr<Hole> hole;
+    std::vector<Location> path;
 
     void idle();
     void moveToTile();
