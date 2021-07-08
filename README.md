@@ -15,3 +15,15 @@ On ubuntu/debian: apt-get install libwxgtk3.0-gtk3-dev.
 On MacOS: brew install wxwidgets (requires homebrew).
 
 Not tested on Windows.
+
+Docker:
+
+docker build -t tileworld .
+
+Default entrypoint is Gtk build
+
+docker run -ti -e DISPLAY=host.docker.internal:0 --rm --init tileworld
+
+To run WxWidgets:
+
+docker run -ti -e DISPLAY=host.docker.internal:0 --rm --init tileworld /app/TileWorldWx
