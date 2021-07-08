@@ -1,8 +1,9 @@
 APP=TileWorld
 #COMPILER=clang++
+STD=-std=c++20
 COMPILER=g++
-CFLAGS=-O0 -Werror -std=c++17 -g -DDEBUGGING=1 -DDEBUG=1
-LDFLAGS=-std=c++17 -g
+CFLAGS=-O0 -Werror $(STD) -g -DDEBUGGING=1 -DDEBUG=1
+LDFLAGS=$(STD) -g
 #GUI=gtk
 
 ifeq ($(GUI), gtk)
