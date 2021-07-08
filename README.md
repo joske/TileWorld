@@ -12,9 +12,9 @@ no GUI: make all
 
 On ubuntu/debian: apt-get install libwxgtk3.0-gtk3-dev. 
 
-On MacOS: brew install wxwidgets (requires homebrew).
+On MacOS: brew install wxwidgets (requires homebrew) (or use the Docker info below).
 
-Not tested on Windows.
+Not tested on Windows (who cares, but in theory should work with the Docker setup).
 
 Docker:
 
