@@ -1,6 +1,6 @@
 APP=TileWorld
 #COMPILER=clang++
-STD=-std=c++20
+STD=-std=c++17
 COMPILER=g++
 CFLAGS=-O0 -Werror $(STD) -g -DDEBUGGING=1 -DDEBUG=1
 LDFLAGS=$(STD) -g
