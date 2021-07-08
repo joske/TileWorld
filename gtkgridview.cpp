@@ -73,13 +73,14 @@ bool GridView::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
     const vector<shared_ptr<Agent>> &agents = grid.getAgents();
     const int x = COLS * MAG + 20;
     const int y = 20;
-    for_each(agents.begin(), agents.end(), [&](shared_ptr<Agent> agent) {
-        ostringstream buf;
-        int id = agent->getId();
-        set_color(cr, id);
-        buf << "Agent(" << id << "): " << agent->getScore();
-        draw_text(cr, x, y + id * MAG, buf.str().c_str());
-    });
+    for_each(agents.begin(), agents.end(), [&](shared_ptr<Agent> agent)
+             {
+                 ostringstream buf;
+                 int id = agent->getId();
+                 set_color(cr, id);
+                 buf << "Agent(" << id << "): " << agent->getScore();
+                 draw_text(cr, x, y + id * MAG, buf.str().c_str());
+             });
     return true;
 }
 
@@ -98,7 +99,8 @@ void GridView::drawAgent(const Cairo::RefPtr<Cairo::Context> &cr, shared_ptr<Gri
     shared_ptr<Agent> agent = static_pointer_cast<Agent>(o);
     set_color(cr, agent->getId());
     cr->rectangle(x, y, MAG, MAG);
-    if (agent->hasTile) {
+    if (agent->hasTile)
+    {
         cr->begin_new_sub_path();
         cr->arc(x + MAG / 2, y + MAG / 2, MAG / 2, 0, 2 * M_PI);
         cr->begin_new_sub_path();

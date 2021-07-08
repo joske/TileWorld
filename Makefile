@@ -29,10 +29,5 @@ $(APP): $(OBJS)
 .cpp.o: %.c $(HDRS)
 	$(COMPILER) $(CFLAGS) -c $<
 
-test:
-	rm -f astar_test
-	$(COMPILER) $(CFLAGS) -c astar_test.cpp astar.cpp location.cpp grid.cpp agent.cpp
-	$(COMPILER) $(LDFLAGS) -o astar_test astar_test.o astar.o grid.o agent.o location.o
-
 clean: 
-	rm -f $(OBJS) TileWorld
+	rm -f $(OBJS) *.o TileWorld

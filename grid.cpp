@@ -35,7 +35,7 @@ Location Grid::randomFreeLocation() const
     return Location(c, r);
 }
 
-bool Grid::isFree(const Location &location) const 
+bool Grid::isFree(const Location &location) const
 {
     shared_ptr<GridObject> o = objects[location.getX()][location.getY()];
     if (o)
@@ -154,7 +154,8 @@ shared_ptr<GridObject> Grid::findAgent(Agent *a)
 {
     for (shared_ptr<Agent> agent : agents)
     {
-        if (agent.get() == a) {
+        if (agent.get() == a)
+        {
             return static_pointer_cast<GridObject>(agent);
         }
     }

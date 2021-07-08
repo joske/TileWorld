@@ -49,8 +49,8 @@ public:
     void start();
     void update();
     shared_ptr<GridObject> getObject(int x, int y) const;
-    shared_ptr<Hole>  getClosestHole(const Location &start) const;
-    shared_ptr<Tile>  getClosestTile(const Location &start) const;
+    shared_ptr<Hole> getClosestHole(const Location &start) const;
+    shared_ptr<Tile> getClosestTile(const Location &start) const;
     bool possibleMove(const Location &from, const direction m) const;
     bool isFree(const Location &loc) const;
     bool allowedLocation(const Location &loc) const;

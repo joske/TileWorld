@@ -35,7 +35,7 @@ public:
 
     int getId() const;
     void update();
-    shared_ptr<Tile>  getTile() const
+    shared_ptr<Tile> getTile() const
     {
         return tile;
     }
