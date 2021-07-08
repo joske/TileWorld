@@ -83,7 +83,7 @@ void Grid::createAgent(int i)
     shared_ptr<Agent> agent = make_shared<Agent>(this, i, loc);
     LDEBUG("created " << *agent);
     agents.push_back(agent);
-    objects[loc.getX()][loc.getY()] = dynamic_pointer_cast<GridObject>(agent);
+    objects[loc.getX()][loc.getY()] = static_pointer_cast<GridObject>(agent);
 }
 
 void Grid::createHole()
@@ -93,7 +93,7 @@ void Grid::createHole()
     shared_ptr<Hole> hole = make_shared<Hole>(loc);
     LDEBUG("created " << *hole);
     holes.push_back(hole);
-    objects[loc.getX()][loc.getY()] = dynamic_pointer_cast<GridObject>(hole);
+    objects[loc.getX()][loc.getY()] = static_pointer_cast<GridObject>(hole);
 }
 
 void Grid::createTile()
@@ -104,7 +104,7 @@ void Grid::createTile()
     shared_ptr<Tile> tile = make_shared<Tile>(loc, score);
     LDEBUG("created " << *tile);
     tiles.push_back(tile);
-    objects[loc.getX()][loc.getY()] = dynamic_pointer_cast<GridObject>(tile);
+    objects[loc.getX()][loc.getY()] = static_pointer_cast<GridObject>(tile);
 }
 
 void Grid::createObstacle()
