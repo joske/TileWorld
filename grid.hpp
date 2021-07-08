@@ -7,8 +7,8 @@
 #include "agent.hpp"
 #include "gridobjects.hpp"
 
-#define COLS 20
-#define ROWS 20
+#define COLS 40
+#define ROWS 40
 
 using namespace std;
 

@@ -16,11 +16,11 @@ IMPLEMENT_APP(MyApp)
 #else
 int main(int argc, char **argv)
 {
-    int agents = 5;
+    int agents = 6;
     int tiles = 20;
     int holes = 20;
-    int obst = 20;
-    int delay = 300;
+    int obst = 40;
+    int delay = 200;
 
     if (argc != 1)
     {

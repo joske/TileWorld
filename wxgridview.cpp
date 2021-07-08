@@ -8,10 +8,10 @@
 
 bool MyApp::OnInit()
 {
-    int agents = 5;
+    int agents = 6;
     int tiles = 20;
     int holes = 20;
-    int obst = 20;
+    int obst = 60;
     int delay = 200;
 
     if (argc != 1)
