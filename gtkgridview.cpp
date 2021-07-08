@@ -11,6 +11,7 @@
 #include <cmath>
 #include <glibmm/main.h>
 #include <string>
+#include <memory>
 
 GridView::GridView(Grid &grid, int delay) : grid(grid)
 {
@@ -45,7 +46,7 @@ bool GridView::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
             int x = c * MAG;
             int y = r * MAG;
             cr->set_source_rgb(0, 0, 0);
-            GridObject *o = grid.getObject(c, r);
+            shared_ptr<GridObject> o = grid.getObject(c, r);
             if (o != NULL)
             {
                 switch (o->getType())
@@ -69,10 +70,10 @@ bool GridView::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
             cr->stroke();
         }
     }
-    const vector<Agent *> &agents = grid.getAgents();
+    const vector<shared_ptr<Agent>> &agents = grid.getAgents();
     const int x = COLS * MAG + 20;
     const int y = 20;
-    for_each(agents.begin(), agents.end(), [&](Agent *agent) {
+    for_each(agents.begin(), agents.end(), [&](shared_ptr<Agent> agent) {
         ostringstream buf;
         int id = agent->getId();
         set_color(cr, id);
@@ -82,19 +83,19 @@ bool GridView::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
     return true;
 }
 
-void GridView::drawTile(const Cairo::RefPtr<Cairo::Context> &cr, GridObject *o,
+void GridView::drawTile(const Cairo::RefPtr<Cairo::Context> &cr, shared_ptr<GridObject> o,
                         int x, int y)
 {
-    Tile *tile = reinterpret_cast<Tile *>(o);
+    shared_ptr<Tile> tile = static_pointer_cast<Tile>(o);
     cr->arc(x + MAG / 2, y + MAG / 2, MAG / 2, 0, 2 * M_PI);
     cr->begin_new_sub_path();
     draw_text(cr, x + MAG / 4, y, to_string(tile->getScore()).c_str());
 }
 
-void GridView::drawAgent(const Cairo::RefPtr<Cairo::Context> &cr, GridObject *o,
+void GridView::drawAgent(const Cairo::RefPtr<Cairo::Context> &cr, shared_ptr<GridObject> o,
                          int x, int y)
 {
-    Agent *agent = reinterpret_cast<Agent *>(o);
+    shared_ptr<Agent> agent = static_pointer_cast<Agent>(o);
     set_color(cr, agent->getId());
     cr->rectangle(x, y, MAG, MAG);
     if (agent->hasTile) {
