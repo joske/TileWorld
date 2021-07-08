@@ -73,7 +73,7 @@ bool Grid::allowedLocation(const Location &loc) const
     {
         return false;
     }
-    return true;
+    return isFree(loc);
 }
 
 void Grid::createAgent(int i)
