@@ -1,0 +1,9 @@
+.github/
+.vscode/
+.git/
+.gitattributes
+.gitignore
+.dockerignore
+Dockerfile
+*.o
+TileWorld

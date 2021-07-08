@@ -2,16 +2,17 @@
 #include "grid.hpp"
 #include <string>
 #include <sstream>
+#include <memory>
 
 #ifdef WXGUI
 
 bool MyApp::OnInit()
 {
-    int agents = 1;
+    int agents = 5;
     int tiles = 20;
     int holes = 20;
     int obst = 20;
-    int delay = 300;
+    int delay = 200;
 
     if (argc != 1)
     {
@@ -115,20 +116,20 @@ void draw_text(wxDC &dc, int x, int y, const char *text)
     draw_text(dc, x, y, text, wxColor(0, 0, 0));
 }
 
-void drawTile(wxDC &dc, GridObject *o,
+void drawTile(wxDC &dc, shared_ptr<GridObject> o,
               int x, int y)
 {
-    Tile *tile = reinterpret_cast<Tile *>(o);
+    shared_ptr<Tile> tile = static_pointer_cast<Tile>(o);
     dc.SetPen(wxPen(wxColor(0, 0, 0), 2));
     dc.DrawCircle(wxPoint(x + MAG / 2, y + MAG / 2), MAG / 2);
     draw_text(dc, x + MAG / 4, y, to_string(tile->getScore()).c_str());
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
 }
 
-void drawAgent(wxDC &dc, GridObject *o,
+void drawAgent(wxDC &dc, shared_ptr<GridObject> o,
                int x, int y)
 {
-    Agent *agent = reinterpret_cast<Agent *>(o);
+    shared_ptr<Agent> agent = static_pointer_cast<Agent>(o);
     const wxColor &color = set_color(dc, agent->getId());
     dc.DrawRectangle(x, y, MAG, MAG);
     if (agent->hasTile)
@@ -167,7 +168,7 @@ void BasicDrawPane::render(wxDC &dc)
         {
             int x = c * MAG;
             int y = r * MAG;
-            GridObject *o = grid.getObject(c, r);
+            shared_ptr<GridObject> o = grid.getObject(c, r);
             if (o != NULL)
             {
                 switch (o->getType())
@@ -190,7 +191,7 @@ void BasicDrawPane::render(wxDC &dc)
     }
     const int x = COLS * MAG + 20;
     const int y = 20;
-    for (Agent *agent : grid.getAgents())
+    for (shared_ptr<Agent> agent : grid.getAgents())
     {
         ostringstream buf;
         int id = agent->getId();

@@ -6,6 +6,7 @@
 #include "gridobjects.hpp"
 #include "searchstrategy.hpp"
 #include <vector>
+#include <memory>
 
 using namespace std;
 
