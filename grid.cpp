@@ -100,7 +100,7 @@ void Grid::createTile()
 {
     TRACE_IN
     Location loc = randomFreeLocation();
-    int score = RND(6);
+    int score = RND(5) + 1;
     shared_ptr<Tile> tile = make_shared<Tile>(loc, score);
     LDEBUG("created " << *tile);
     tiles.push_back(tile);
