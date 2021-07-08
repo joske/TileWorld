@@ -104,6 +104,7 @@ void Agent::moveToHole()
             LDEBUG(*this << " dump tile")
             hasTile = false;
             this->score += tile->getScore();
+            tile.reset();
             hole.reset();
             tile = grid->getClosestTile(loc);
             LDEBUG(*this << " found tile " << *tile)
