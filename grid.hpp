@@ -54,7 +54,7 @@ public:
     bool possibleMove(const Location &from, const direction m) const;
     bool isFree(const Location &loc) const;
     bool allowedLocation(const Location &loc) const;
-    void move(const Location &from, const Location &to);
+    void move(Agent *o, const Location &from, const Location &to);
     bool pickTile(shared_ptr<Tile> tile);
     int dumpTile(shared_ptr<Tile> tile, shared_ptr<Hole> hole);
 
@@ -74,7 +74,7 @@ private:
     void createObstacle();
     Location randomFreeLocation() const;
     void printGrid() const;
-
+    shared_ptr<GridObject> findAgent(Agent *a);
     friend std::ostream &operator<<(std::ostream &strm, const Grid &a)
     {
         return strm << "Grid(agents=" << a.agents.size() << ", tiles="

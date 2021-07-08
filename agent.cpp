@@ -52,7 +52,7 @@ void Agent::moveToTile()
         {
             const Location newLoc = path.front();
             path.erase(path.begin());
-            grid->move(loc, newLoc);
+            grid->move(this, loc, newLoc);
             setLocation(newLoc);
             if (newLoc == tile->getLocation())
             {
@@ -104,7 +104,7 @@ void Agent::moveToHole()
             const Location newLoc = path.front();
             path.erase(path.begin());
             LDEBUG(*this << " next location " << newLoc << " to hole " << *hole)
-            grid->move(loc, newLoc);
+            grid->move(this, loc, newLoc);
             setLocation(newLoc);
             if (newLoc == hole->getLocation())
             {

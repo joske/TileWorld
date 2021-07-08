@@ -38,7 +38,7 @@ Location Grid::randomFreeLocation() const
 bool Grid::isFree(const Location &location) const 
 {
     shared_ptr<GridObject> o = objects[location.getX()][location.getY()];
-    if (o != NULL)
+    if (o)
     {
         return false;
     }
@@ -150,11 +150,22 @@ shared_ptr<Tile> Grid::getClosestTile(const Location &start) const
     return best;
 }
 
-void Grid::move(const Location &from, const Location &to)
+shared_ptr<GridObject> Grid::findAgent(Agent *a)
 {
-    shared_ptr<GridObject> o = objects[from.getX()][from.getY()];
-    objects[from.getX()][from.getY()] = NULL;
-    objects[to.getX()][to.getY()] = o;
+    for (shared_ptr<Agent> agent : agents)
+    {
+        if (agent.get() == a) {
+            return static_pointer_cast<GridObject>(agent);
+        }
+    }
+    return NULL;
+}
+
+void Grid::move(Agent *o, const Location &from, const Location &to)
+{
+    shared_ptr<GridObject> agent = findAgent(o);
+    objects[from.getX()][from.getY()].reset();
+    objects[to.getX()][to.getY()].swap(agent);
 }
 
 bool Grid::pickTile(shared_ptr<Tile> tile)
