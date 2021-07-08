@@ -1,53 +1,69 @@
 #include "astar.hpp"
-#include "priorityq.hpp"
+#include <queue>
 #include <vector>
 #include <set>
+#include <functional>
+#include "main.hpp"
 
-std::vector<direction> makePath(Node *end, Node *start) {
-    std::vector<direction> directions;
-    Node *current = end;
-    Node *parent = current->parent;
-    while (current->location != start->location) {
-        direction d = parent->location.getDirection(current->location);
-        directions.insert(directions.begin(), d);
-    }
-    return directions;
-}
-
-template<class T>
-void checkNeighbor(Grid *grid, T& openList, std::set<Node> closedList, direction d, Node current, Location from, Location to) {
+template <class T>
+void checkNeighbor(Grid *grid, T &openList, std::vector<Node> &openSet, std::vector<Node> &closedList, direction d, Node &current, Location &from, Location &to)
+{
     Location nextLoc = current.location.nextLocation(d);
-    if (nextLoc == to || grid->possibleMove(current.location, d)) {
+    if (nextLoc == to || grid->possibleMove(current.location, d))
+    {
         int h = nextLoc.distance(to);
+        LDEBUG("next location to examine " << nextLoc);
         int g = from.distance(nextLoc);
-        Node child = Node(nextLoc, &current, g + h);
-        if (!closedList.contains(child)) {
-            if (!openList.contains(child)) {
-                // child is not in openList
-                openList.push(child);
-            }        
+        std::vector<Location> path;
+        path.insert(path.begin(), current.path.begin(), current.path.end());
+        path.insert(path.end(), nextLoc);
+        Node child = Node(nextLoc, path, g + h);        
+        if (std::find(closedList.begin(), closedList.end(), child) == closedList.end())
+        {
+            for (Node n : openSet)
+            {
+                if (n.location == child.location && n.fscore < child.fscore)
+                {
+                    LDEBUG("better node exists with score " << n.fscore);
+                    return;
+                }
+            }
+            LDEBUG("add child with fscore " << child.fscore);
+            // child is not in openList
+            openList.push(child);
+            openSet.insert(openSet.end(), child);
         }
     }
 }
 
-std::vector<direction> astar(Grid *grid, Location from, Location to) {
-    auto cmp = [](Node left, Node right) { return left.fscore < right.fscore;};
-    MyPriorityQueue<Node> openList;
-    std::set<Node> closedList;
-    Node fromNode = Node(from, NULL, 0);
+std::vector<Location> astar(Grid *grid, Location from, Location to)
+{
+    LDEBUG("finding path from " << from << " to " << to);
+    auto cmp = [](Node left, Node right)
+    { return left.fscore > right.fscore; };
+    std::priority_queue<Node, std::vector<Node>, decltype(cmp)> openList(cmp);
+    std::vector<Node> openSet;
+    std::vector<Node> closedList;
+    Node fromNode = Node(from, std::vector<Location>(), 0);
     openList.push(fromNode);
-    while (!openList.empty()) {
+    openSet.insert(openSet.end(), fromNode);
+    while (!openList.empty())
+    {
         Node current = openList.top();
         openList.pop();
-        if (current.location == to) {
+        openSet.erase(std::find(openSet.begin(), openSet.end(), current));
+        LDEBUG("current=" << current.location);
+        if (current.location == to)
+        {
             // arrived
-            return makePath(&current, &fromNode);
+            LDEBUG("found path");
+            return current.path;
         }
-        closedList.insert(current);
-        checkNeighbor(grid, openList, closedList, direction::UP, current, from, to);
-        checkNeighbor(grid, openList, closedList, direction::LEFT, current, from, to);
-        checkNeighbor(grid, openList, closedList, direction::DOWN, current, from, to);
-        checkNeighbor(grid, openList, closedList, direction::RIGHT, current, from, to);
+        closedList.insert(closedList.end(), current);
+        checkNeighbor(grid, openList, openSet, closedList, direction::UP, current, from, to);
+        checkNeighbor(grid, openList, openSet, closedList, direction::LEFT, current, from, to);
+        checkNeighbor(grid, openList, openSet, closedList, direction::DOWN, current, from, to);
+        checkNeighbor(grid, openList, openSet, closedList, direction::RIGHT, current, from, to);
     }
-    return {};
+    return std::vector<Location>();
 }

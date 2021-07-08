@@ -2,7 +2,7 @@
 #include "grid.hpp"
 #include <limits.h>
 #include "main.hpp"
-#include "path.hpp"
+#include "astar.hpp"
 
 int Agent::getId() const
 {
@@ -44,43 +44,44 @@ void Agent::moveToTile()
     if (tile != NULL)
     {
         LDEBUG(*this << " move to tile " << *tile)
+        if (getLocation() == tile->getLocation())
+        {
+            // we are there, pick the tile
+            grid->pickTile(tile);
+            LDEBUG(*this << " pick tile")
+            hasTile = true;
+            path.clear();
+            hole = grid->getClosestHole(getLocation());
+            LDEBUG(*this << " found hole " << *hole)
+            state = MOVE_TO_HOLE;
+            return;
+        }
+        if (tile != grid->getObject(tile->getLocation().getX(), tile->getLocation().getY()))
+        {
+            // find a new tile
+            tile = grid->getClosestTile(getLocation());
+            path.clear();
+            LDEBUG(*this << " found tile " << *tile)
+        }
         if (path.empty())
         {
-            path = shortestPath(grid, getLocation(), tile->getLocation());
+            path = astar(grid, getLocation(), tile->getLocation());
         }
         if (!path.empty())
         {
-            direction m = path.front();
+            const Location newLoc = path.front();
             path.erase(path.begin());
-            const Location newLoc = loc.nextLocation(m);
-            grid->move(loc, newLoc);
-            setLocation(newLoc);
-            if (newLoc == tile->getLocation())
+            if (newLoc == tile->getLocation() || grid->allowedLocation(newLoc))
             {
-                // we are there, pick the tile
-                bool tileStilThere = grid->pickTile(tile);
-                if (tileStilThere)
-                {
-                    LDEBUG(*this << " pick tile")
-                    hasTile = true;
-                    path.clear();
-                    hole = grid->getClosestHole(newLoc);
-                    LDEBUG(*this << " found hole " << *hole)
-                    state = MOVE_TO_HOLE;
-                }
-                else
-                {
-                    // find a new tile
-                    tile = grid->getClosestTile(newLoc);
-                    LDEBUG(*this << " found tile " << *tile)
-                }
+                grid->move(this, loc, newLoc);
+                setLocation(newLoc);
             }
         }
         else
         {
-            if (hole != NULL)
+            if (tile)
             {
-                LDEBUG(*this << " no path found to " << *hole)
+                LDEBUG(*this << " no path found to " << *tile)
             }
             else
             {
@@ -93,44 +94,42 @@ void Agent::moveToTile()
 void Agent::moveToHole()
 {
     TRACE_IN
-    if (hole != NULL && tile != NULL)
+    if (hole && tile)
     {
         LDEBUG(*this << " move to hole " << *hole)
+        if (getLocation() == hole->getLocation())
+        {
+            // we are there, dump the tile
+            grid->dumpTile(tile, hole);
+            LDEBUG(*this << " dump tile")
+            hasTile = false;
+            this->score += tile->getScore();
+            hole.reset();
+            tile = grid->getClosestTile(loc);
+            LDEBUG(*this << " found tile " << *tile)
+            path.clear();
+            state = MOVE_TO_TILE;
+            return;
+        }
+        if (hole == grid->getObject(hole->getLocation().getX(), hole->getLocation().getY()))
+        {
+            // hole is gone
+            hole = grid->getClosestHole(loc);
+            LDEBUG(*this << " found hole " << *hole)
+        }
         if (path.empty())
         {
-            path = shortestPath(grid, getLocation(), hole->getLocation());
+            path = astar(grid, getLocation(), hole->getLocation());
         }
         if (!path.empty())
         {
-            direction m = path.front();
+            const Location newLoc = path.front();
             path.erase(path.begin());
-            LDEBUG(*this << " next move " << m << " to hole " << *hole)
-            Location newLoc = loc.nextLocation(m);
-            grid->move(loc, newLoc);
-            setLocation(newLoc);
-            if (newLoc == hole->getLocation())
+            if (newLoc == hole->getLocation() || grid->allowedLocation(newLoc))
             {
-                // we are there, dump the tile
-                int sc = grid->dumpTile(tile, hole);
-                if (sc != -1)
-                {
-                    LDEBUG(*this << " dump tile")
-                    delete tile;
-                    delete hole;
-                    tile = NULL;
-                    hole = NULL;
-                    hasTile = false;
-                    this->score += sc;
-                    tile = grid->getClosestTile(loc);
-                    LDEBUG(*this << " found tile " << *tile)
-                    path.clear();
-                    state = MOVE_TO_TILE;
-                }
-                else
-                {
-                    hole = grid->getClosestHole(loc);
-                    LDEBUG(*this << " found hole " << *hole)
-                }
+                LDEBUG(*this << " next location " << newLoc << " to hole " << *hole)
+                grid->move(this, loc, newLoc);
+                setLocation(newLoc);
             }
         }
         else

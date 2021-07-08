@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <algorithm>
+#include <memory>
 #ifdef GTKGUI
 #include <gtkmm.h>
 #endif
@@ -36,8 +37,8 @@ Location Grid::randomFreeLocation() const
 
 bool Grid::isFree(const Location &location) const 
 {
-    GridObject *o = objects[location.getX()][location.getY()];
-    if (o != NULL)
+    shared_ptr<GridObject> o = objects[location.getX()][location.getY()];
+    if (o)
     {
         return false;
     }
@@ -79,20 +80,20 @@ void Grid::createAgent(int i)
 {
     TRACE_IN
     Location loc = randomFreeLocation();
-    Agent *agent = new Agent(this, i, loc);
+    shared_ptr<Agent> agent = make_shared<Agent>(this, i, loc);
     LDEBUG("created " << *agent);
     agents.push_back(agent);
-    objects[loc.getX()][loc.getY()] = agent;
+    objects[loc.getX()][loc.getY()] = static_pointer_cast<GridObject>(agent);
 }
 
 void Grid::createHole()
 {
     TRACE_IN
     Location loc = randomFreeLocation();
-    Hole *hole = new Hole(loc);
+    shared_ptr<Hole> hole = make_shared<Hole>(loc);
     LDEBUG("created " << *hole);
     holes.push_back(hole);
-    objects[loc.getX()][loc.getY()] = hole;
+    objects[loc.getX()][loc.getY()] = static_pointer_cast<GridObject>(hole);
 }
 
 void Grid::createTile()
@@ -100,27 +101,27 @@ void Grid::createTile()
     TRACE_IN
     Location loc = randomFreeLocation();
     int score = RND(6);
-    Tile *tile = new Tile(loc, score);
+    shared_ptr<Tile> tile = make_shared<Tile>(loc, score);
     LDEBUG("created " << *tile);
     tiles.push_back(tile);
-    objects[loc.getX()][loc.getY()] = tile;
+    objects[loc.getX()][loc.getY()] = static_pointer_cast<GridObject>(tile);
 }
 
 void Grid::createObstacle()
 {
     TRACE_IN
     Location loc = randomFreeLocation();
-    Obstacle *obst = new Obstacle(loc);
+    shared_ptr<Obstacle> obst = make_shared<Obstacle>(loc);
     LDEBUG("created " << *obst);
     objects[loc.getX()][loc.getY()] = obst;
 }
 
-Hole *Grid::getClosestHole(const Location &start) const
+shared_ptr<Hole> Grid::getClosestHole(const Location &start) const
 {
     TRACE_IN
     int minDist = INT_MAX;
-    Hole *best = NULL;
-    for (Hole *hole : holes)
+    shared_ptr<Hole> best = NULL;
+    for (shared_ptr<Hole> hole : holes)
     {
         int dist = hole->getLocation().distance(start);
         if (dist < minDist)
@@ -132,12 +133,12 @@ Hole *Grid::getClosestHole(const Location &start) const
     return best;
 }
 
-Tile *Grid::getClosestTile(const Location &start) const
+shared_ptr<Tile> Grid::getClosestTile(const Location &start) const
 {
     TRACE_IN
     int minDist = INT_MAX;
-    Tile *best = NULL;
-    for (Tile *tile : tiles)
+    shared_ptr<Tile> best = NULL;
+    for (shared_ptr<Tile> tile : tiles)
     {
         int dist = tile->getLocation().distance(start);
         if (dist < minDist)
@@ -149,17 +150,28 @@ Tile *Grid::getClosestTile(const Location &start) const
     return best;
 }
 
-void Grid::move(const Location &from, const Location &to)
+shared_ptr<GridObject> Grid::findAgent(Agent *a)
 {
-    GridObject *o = objects[from.getX()][from.getY()];
-    objects[from.getX()][from.getY()] = NULL;
-    objects[to.getX()][to.getY()] = o;
+    for (shared_ptr<Agent> agent : agents)
+    {
+        if (agent.get() == a) {
+            return static_pointer_cast<GridObject>(agent);
+        }
+    }
+    return NULL;
 }
 
-bool Grid::pickTile(Tile *tile)
+void Grid::move(Agent *o, const Location &from, const Location &to)
+{
+    shared_ptr<GridObject> agent = findAgent(o);
+    objects[from.getX()][from.getY()].reset();
+    objects[to.getX()][to.getY()].swap(agent);
+}
+
+bool Grid::pickTile(shared_ptr<Tile> tile)
 {
     TRACE_IN
-    vector<Tile *>::iterator it = std::find(tiles.begin(), tiles.end(), tile);
+    vector<shared_ptr<Tile>>::iterator it = std::find(tiles.begin(), tiles.end(), tile);
     if (it != tiles.end())
     {
         tiles.erase(it);
@@ -168,10 +180,10 @@ bool Grid::pickTile(Tile *tile)
     return it != tiles.end();
 }
 
-int Grid::dumpTile(Tile *tile, Hole *hole)
+int Grid::dumpTile(shared_ptr<Tile> tile, shared_ptr<Hole> hole)
 {
     TRACE_IN
-    vector<Hole *>::iterator it = std::find(holes.begin(), holes.end(), hole);
+    vector<shared_ptr<Hole>>::iterator it = std::find(holes.begin(), holes.end(), hole);
     if (it != holes.end())
     {
         holes.erase(it);
@@ -184,14 +196,14 @@ int Grid::dumpTile(Tile *tile, Hole *hole)
 void Grid::update()
 {
     TRACE_IN
-    for (Agent *agent : agents)
+    for (shared_ptr<Agent> agent : agents)
     {
         agent->update();
     }
     printGrid();
 }
 
-GridObject *Grid::getObject(int col, int row) const
+shared_ptr<GridObject> Grid::getObject(int col, int row) const
 {
     if (row >= ROWS || row < 0)
     {
@@ -214,7 +226,7 @@ void Grid::printGrid() const
     {
         for (int x = 0; x < COLS; x++)
         {
-            GridObject *o = getObject(x, y);
+            shared_ptr<GridObject> o = getObject(x, y);
             if (o != NULL)
             {
                 switch (o->getType())
@@ -245,7 +257,7 @@ void Grid::printGrid() const
 #endif
 }
 
-const vector<Agent *> &Grid::getAgents() const
+const vector<shared_ptr<Agent>> Grid::getAgents() const
 {
     TRACE_IN
     return agents;

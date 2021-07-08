@@ -31,8 +31,8 @@ private:
 
     void draw_text(const Cairo::RefPtr<Cairo::Context> &cr, int rectangle_width, int rectangle_height, const char *text);
     void set_color(const Cairo::RefPtr<Cairo::Context> &cr, int id);
-    void drawAgent(const Cairo::RefPtr<Cairo::Context> &cr, GridObject *o, int x, int y);
-    void drawTile(const Cairo::RefPtr<Cairo::Context> &cr, GridObject *o, int x, int y);
+    void drawAgent(const Cairo::RefPtr<Cairo::Context> &cr, shared_ptr<GridObject> o, int x, int y);
+    void drawTile(const Cairo::RefPtr<Cairo::Context> &cr, shared_ptr<GridObject> o, int x, int y);
 };
 
 #endif /* GRIDVIEW_HPP_ */
