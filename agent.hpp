@@ -56,6 +56,9 @@ private:
     std::vector<Location> path;
 
     void idle();
+    void pickTile();
+    void dumpTile();
+    void moveToObject(shared_ptr<GridObject> o);
     void moveToTile();
     void moveToHole();
     direction getNextLocalMove(const Location &from, const Location &to);
