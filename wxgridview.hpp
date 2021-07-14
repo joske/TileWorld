@@ -12,7 +12,7 @@ class BasicDrawPane : public wxPanel
 {
 
 public:
-    BasicDrawPane(wxFrame *parent, int agents, int tiles, int holes, int obst, int delay);
+    BasicDrawPane(wxFrame *parent, Grid &grid, int delay);
 
     void paintEvent(wxPaintEvent &evt);
     void paintNow();
@@ -22,17 +22,19 @@ public:
 
     DECLARE_EVENT_TABLE()
 private:
-    Grid grid;
+    Grid &grid;
     wxTimer *timer;
 };
 
 class MyApp : public wxApp
 {
 public:
-    MyApp(){};
+    MyApp(Grid &grid, int delay) : grid(grid), delay(delay) {}
     virtual ~MyApp(){};
 
     virtual bool OnInit();
+    Grid &grid;
+    int delay;
     wxFrame *frame;
     BasicDrawPane *drawPane;
 };

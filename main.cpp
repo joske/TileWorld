@@ -11,9 +11,8 @@ using namespace Gtk;
 
 #ifdef WXGUI
 #include "wxgridview.hpp"
+#endif
 
-IMPLEMENT_APP(MyApp)
-#else
 int main(int argc, char **argv)
 {
     int agents = 6;
@@ -38,22 +37,28 @@ int main(int argc, char **argv)
     }
 
     srand(time(NULL));
+    Grid grid(agents, tiles, holes, obst);
 #ifdef GTKGUI
     auto app = Gtk::Application::create(argc, argv, "TileWorld");
 
     Gtk::Window win;
     win.set_default_size((COLS * MAG) + 200, ROWS * MAG); // space for the scores
     win.set_title("TileWorld");
-#endif
-    Grid grid(agents, tiles, holes, obst);
-#ifdef GTKGUI
     GridView area(grid, delay);
     win.add(area);
     area.show();
-#endif
-    grid.start();
-#ifdef GTKGUI
     return app->run(win);
-#endif
+#else // GTKGUI
+#ifdef WXGUI
+    MyApp* myApp = new MyApp(grid, delay);
+    wxApp::SetInstance(myApp);
+    wxEntryStart(argc, argv);
+    wxTheApp->CallOnInit();
+    wxTheApp->OnRun();
+    wxTheApp->OnExit();
+    wxEntryCleanup();
+#else // WXGUI
+    grid.start();    
+#endif // WXGUI
+#endif // GTKGUI
 }
-#endif /* WXGUI */

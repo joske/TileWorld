@@ -8,33 +8,11 @@
 
 bool MyApp::OnInit()
 {
-    int agents = 6;
-    int tiles = 20;
-    int holes = 20;
-    int obst = 60;
-    int delay = 200;
-
-    if (argc != 1)
-    {
-        // parameters passed
-        if (argc != 6)
-        {
-            cerr << "usage: " << argv[0] << " <agents> <tiles> <holes> <obstacles> <delay>" << endl;
-            return 1;
-        }
-        agents = atoi(argv[1]);
-        tiles = atoi(argv[2]);
-        holes = atoi(argv[3]);
-        obst = atoi(argv[4]);
-        delay = atoi(argv[5]);
-    }
-
     wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
     frame = new wxFrame((wxFrame *)NULL, -1, wxT("TileWorld"), wxPoint(50, 50), wxSize((COLS * MAG) + 200, ROWS * MAG));
-
-    drawPane = new BasicDrawPane((wxFrame *)frame, agents, tiles, holes, obst, delay);
+    
+    drawPane = new BasicDrawPane((wxFrame *)frame, grid, delay);
     sizer->Add(drawPane, 1, wxEXPAND);
-
     frame->SetSizer(sizer);
     frame->SetAutoLayout(true);
 
@@ -46,7 +24,7 @@ BEGIN_EVENT_TABLE(BasicDrawPane, wxPanel)
 EVT_PAINT(BasicDrawPane::paintEvent)
 END_EVENT_TABLE()
 
-BasicDrawPane::BasicDrawPane(wxFrame *parent, int agents, int tiles, int holes, int obst, int delay) : wxPanel(parent), grid(agents, tiles, holes, obst)
+BasicDrawPane::BasicDrawPane(wxFrame *parent, Grid &grid, int delay) : wxPanel(parent), grid(grid)
 {
     timer = new wxTimer(this, 1);
     Connect(wxEVT_TIMER, wxCommandEventHandler(BasicDrawPane::OnTimer));
