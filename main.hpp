@@ -17,7 +17,9 @@
 #else
 #define TRACE_IN
 #define TRACE_OUT
-#define LDEBUG(x) do {} while (false);
+#define LDEBUG(x)                                                              \
+  do {                                                                         \
+  } while (false);
 #endif
 
 #define RND(m) (rand() % m)

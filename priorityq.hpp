@@ -1,26 +1,21 @@
 #include <queue>
 #include <unordered_set>
 
-template <class T,
-          class Container = std::vector<T>,
+template <class T, class Container = std::vector<T>,
           class Compare = std::less<typename Container::value_type>,
           class Hash = std::hash<T>>
-class MyPriorityQueue
-{
+class MyPriorityQueue {
 public:
   MyPriorityQueue(const Compare &compare, const Hash &hash)
       : pq_(compare, Container()), set_(50, hash) {}
 
-  void push(T item)
-  {
-    if (!contains(item))
-    {
+  void push(T item) {
+    if (!contains(item)) {
       pq_.push(item);
       set_.emplace(item);
     }
   }
-  T pop()
-  {
+  T pop() {
     T top = pq_.top();
     set_.erase(top);
     pq_.pop();
