@@ -1,16 +1,19 @@
-#include "grid.hpp"
 #include <stdlib.h>
 #include <time.h>
 
+#include "./grid.hpp"
+
 #ifdef GTKGUI
-#include "gtkgridview.hpp"
 #include <gtkmm/application.h>
 #include <gtkmm/window.h>
+
+#include "./gtkgridview.hpp"
+
 using namespace Gtk;
 #endif
 
 #ifdef WXGUI
-#include "wxgridview.hpp"
+#include "./wxgridview.hpp"
 #endif
 
 int main(int argc, char **argv) {

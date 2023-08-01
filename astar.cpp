@@ -1,11 +1,13 @@
-#include "astar.hpp"
-#include "main.hpp"
-#include "priorityq.hpp"
 #include <functional>
 #include <set>
 #include <vector>
 
+#include "./astar.hpp"
+#include "./main.hpp"
+#include "./priorityq.hpp"
+
 template <class T>
+
 void checkNeighbor(Grid *grid, T &openList, std::vector<Node> &closedList,
                    direction d, Node &current, Location &from, Location &to) {
   Location nextLoc = current.location.nextLocation(d);

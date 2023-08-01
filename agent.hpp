@@ -1,12 +1,13 @@
 #ifndef __AGENT_HPP__
 #define __AGENT_HPP__
 
-#include "gridobjects.hpp"
-#include "location.hpp"
-#include "searchstrategy.hpp"
 #include <iostream>
 #include <memory>
 #include <vector>
+
+#include "./gridobjects.hpp"
+#include "./location.hpp"
+#include "./searchstrategy.hpp"
 
 using namespace std;
 

@@ -1,9 +1,10 @@
 #ifndef __LOCATION_H__
 #define __LOCATION_H__
 
-#include "main.hpp"
-#include "searchstrategy.hpp"
 #include <iostream>
+
+#include "./main.hpp"
+#include "./searchstrategy.hpp"
 
 using namespace std;
 

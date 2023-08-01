@@ -2,41 +2,39 @@
 #define __WXGRIDVIEW_HPP__
 
 #ifdef WXGUI
-#include <wx/wx.h>
 #include <wx/sizer.h>
-#include "grid.hpp"
+#include <wx/wx.h>
+
+#include "./grid.hpp"
 
 #define MAG 20
 
-class BasicDrawPane : public wxPanel
-{
-
+class BasicDrawPane : public wxPanel {
 public:
-    BasicDrawPane(wxFrame *parent, Grid &grid, int delay);
+  BasicDrawPane(wxFrame *parent, Grid &grid, int delay);
 
-    void paintEvent(wxPaintEvent &evt);
-    void paintNow();
-    void OnTimer(wxCommandEvent &event);
+  void paintEvent(wxPaintEvent &evt);
+  void paintNow();
+  void OnTimer(wxCommandEvent &event);
 
-    void render(wxDC &dc);
+  void render(wxDC &dc);
 
-    DECLARE_EVENT_TABLE()
+  DECLARE_EVENT_TABLE()
 private:
-    Grid &grid;
-    wxTimer *timer;
+  Grid &grid;
+  wxTimer *timer;
 };
 
-class MyApp : public wxApp
-{
+class MyApp : public wxApp {
 public:
-    MyApp(Grid &grid, int delay) : grid(grid), delay(delay) {}
-    virtual ~MyApp(){};
+  MyApp(Grid &grid, int delay) : grid(grid), delay(delay) {}
+  virtual ~MyApp(){};
 
-    virtual bool OnInit();
-    Grid &grid;
-    int delay;
-    wxFrame *frame;
-    BasicDrawPane *drawPane;
+  virtual bool OnInit();
+  Grid &grid;
+  int delay;
+  wxFrame *frame;
+  BasicDrawPane *drawPane;
 };
 
 #endif

@@ -1,6 +1,7 @@
-#include "location.hpp"
-#include "searchstrategy.hpp"
 #include <iostream>
+
+#include "./location.hpp"
+#include "./searchstrategy.hpp"
 
 int Location::distance(const Location &other) const {
   return abs(x - other.x) + abs(y - other.y);

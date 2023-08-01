@@ -1,9 +1,9 @@
-#include "agent.hpp"
-#include "astar.hpp"
-#include "grid.hpp"
-#include "main.hpp"
-
 #include <limits.h>
+
+#include "./agent.hpp"
+#include "./astar.hpp"
+#include "./grid.hpp"
+#include "./main.hpp"
 
 int Agent::getId() const { return id; }
 

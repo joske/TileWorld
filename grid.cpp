@@ -1,5 +1,3 @@
-#include "grid.hpp"
-#include "agent.hpp"
 #include <algorithm>
 #include <iostream>
 #include <limits.h>
@@ -8,7 +6,9 @@
 #ifdef GTKGUI
 #include <gtkmm.h>
 #endif
-#include "main.hpp"
+#include "./agent.hpp"
+#include "./grid.hpp"
+#include "./main.hpp"
 
 void Grid::start(void) {
   LDEBUG("start");
@@ -150,7 +150,8 @@ bool Grid::pickTile(shared_ptr<Tile> tile) {
       std::find(tiles.begin(), tiles.end(), tile);
   if (it != tiles.end()) {
     tiles.erase(it);
-    createTile(); // create a new tile
+    // create a new tile
+    createTile();
   }
   return it != tiles.end();
 }
@@ -161,7 +162,8 @@ int Grid::dumpTile(shared_ptr<Tile> tile, shared_ptr<Hole> hole) {
       std::find(holes.begin(), holes.end(), hole);
   if (it != holes.end()) {
     holes.erase(it);
-    createHole(); // and a new hole
+    // and a new hole
+    createHole();
     return tile->getScore();
   }
   return -1;

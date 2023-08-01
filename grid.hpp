@@ -1,11 +1,13 @@
 #ifndef __GRID_H__
 #define __GRID_H__
 
-#include "agent.hpp"
-#include "gridobjects.hpp"
 #include <array>
 #include <memory>
+#include <utility>
 #include <vector>
+
+#include "./agent.hpp"
+#include "./gridobjects.hpp"
 
 #define COLS 40
 #define ROWS 40

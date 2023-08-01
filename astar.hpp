@@ -1,9 +1,10 @@
-#include "grid.hpp"
-#include "location.hpp"
-#include "searchstrategy.hpp"
 #include <iostream>
 #include <map>
 #include <vector>
+
+#include "./grid.hpp"
+#include "./location.hpp"
+#include "./searchstrategy.hpp"
 
 class Node {
 public:

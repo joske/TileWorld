@@ -1,5 +1,7 @@
+#include <functional>
 #include <queue>
 #include <unordered_set>
+#include <vector>
 
 template <class T, class Container = std::vector<T>,
           class Compare = std::less<typename Container::value_type>,
